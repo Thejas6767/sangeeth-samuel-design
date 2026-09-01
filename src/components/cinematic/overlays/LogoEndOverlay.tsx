@@ -1,6 +1,5 @@
 import { motion, type MotionValue, useTransform } from 'framer-motion';
-import logoImg from '../../../assets/logo/logo.webp';
-import { FONT_MONO, SCROLL_TIMELINE } from '../../shared/constants';
+import { SCROLL_TIMELINE } from '../../shared/constants';
 
 interface Props {
   scrollYProgress: MotionValue<number>;

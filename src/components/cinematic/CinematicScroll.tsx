@@ -8,7 +8,6 @@ import { ArchiveOverlay } from './overlays/ArchiveOverlay';
 import { ProcessOverlay } from './overlays/ProcessOverlay';
 import { FounderOverlay } from './overlays/FounderOverlay';
 import { ContactOverlay } from './overlays/ContactOverlay';
-import { LogoEndOverlay } from './overlays/LogoEndOverlay';
 import { ArchiveModal } from '../sections/ArchiveModal';
 import type { TrophyItem } from '../shared/types';
 import { FONT_MONO, SCROLL_TIMELINE } from '../shared/constants';
