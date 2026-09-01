@@ -309,14 +309,14 @@ const [showFrames, setShowFrames] = useState(true);
        * Main cinematic sequence.
        * Only frames 1 → 130.
        */
-      if (clamped <= 0.76) {
-        const mainProgress =
-          clamped / 0.76;
+     if (clamped <= 0.76) {
+  const mainProgress =
+    clamped / 0.76;
 
-        targetFrame = Math.round(
-          mainProgress * 129
-        );
-      }
+  targetFrame = Math.round(
+    mainProgress * 129
+  );
+}
 
       /*
        * 0.76 → 0.97

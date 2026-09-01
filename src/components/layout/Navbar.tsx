@@ -59,41 +59,43 @@ export function Navbar({ menuOpen, setMenuOpen }: Props) {
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease }}
-        className="fixed left-0 right-0 top-0 z-50 px-4 py-3 sm:px-6 md:px-10 lg:px-12"
-      >
-        <div className={`mx-auto flex max-w-[1440px] items-center justify-between px-3 transition-all duration-700 sm:px-4 ${scrolled && !menuOpen ? 'border border-white/10 bg-[#0A0A09]/70 py-2.5 backdrop-blur-xl' : 'py-2'}`}>
-          <button
+className="fixed left-0 right-0 top-0 z-50 px-4 py-4 sm:px-6 md:px-10 lg:px-12"      >
+<div className={`mx-auto flex max-w-[1440px] items-center justify-between px-4 transition-all duration-700 sm:px-5 ${scrolled && !menuOpen ? 'border border-white/15 bg-[#0A0A09]/85 py-4 backdrop-blur-xl' : 'py-3'}`}>          <button
             type="button"
             onClick={() => { playSound('click'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="group flex items-center focus-premium"
             aria-label="Sangeeth Samuel Design Home"
           >
-            <img src={logoImg} alt="Sangeeth Samuel Design" className="h-8 w-auto object-contain opacity-90 transition-opacity duration-500 group-hover:opacity-100 sm:h-9" />
-          </button>
+<img
+  src={logoImg}
+  alt="Sangeeth Samuel Design"
+  className="h-10 w-auto object-contain opacity-100 transition-opacity duration-500 group-hover:opacity-100 sm:h-11 md:h-12"
+/>          </button>
 
-          <motion.nav variants={desktopVariants} initial="hidden" animate="show" className="hidden items-center gap-8 md:flex lg:gap-10">
-            {NAV_LINKS.map((link) => (
+<motion.nav
+  variants={desktopVariants}
+  initial="hidden"
+  animate="show"
+  className="hidden items-center gap-7 md:flex lg:gap-9 xl:gap-10"
+>            {NAV_LINKS.map((link) => (
               <motion.button
                 key={link.label}
                 variants={itemVariants}
                 type="button"
                 onClick={() => { playSound('click'); scrollToProgress(link.progress); }}
-                className="group relative py-2 font-mono text-[9px] tracking-[0.2em] text-white/65 transition-colors duration-300 hover:text-white focus-premium"
-                style={{ fontFamily: FONT_MONO }}
+className="group relative py-3 font-mono text-[11px] font-medium tracking-[0.16em] text-white/90 transition-colors duration-300 hover:text-white focus-premium"                style={{ fontFamily: FONT_MONO }}
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-white transition-all duration-500 group-hover:w-full" />
-              </motion.button>
+<span className="absolute bottom-0 left-0 h-[2px] w-0 bg-white transition-all duration-500 group-hover:w-full" />              </motion.button>
             ))}
           </motion.nav>
 
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center border border-white/10 text-white md:hidden focus-premium"
-            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+className="flex h-12 w-12 items-center justify-center border border-white/20 bg-[#0A0A09]/40 text-white md:hidden focus-premium"            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             onClick={() => { playSound('click'); setMenuOpen((v) => !v); }}
           >
-            {menuOpen ? <X size={19} strokeWidth={1.2} /> : <Menu size={19} strokeWidth={1.2} />}
+            {menuOpen ? <X size={21} strokeWidth={1.8} /> : <Menu size={21} strokeWidth={1.8} />}
           </button>
         </div>
       </motion.header>

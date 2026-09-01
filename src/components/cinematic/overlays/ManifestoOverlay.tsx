@@ -8,12 +8,38 @@ interface Props {
 }
 
 export function ManifestoOverlay({ scrollYProgress }: Props) {
-  const { start, mid, end } = SCROLL_TIMELINE.MANIFESTO;
-  const opacity = useTransform(scrollYProgress, [start, start + 0.02, mid, end - 0.02, end], [0, 1, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [start, mid, end], [28, 0, -28]);
-  const pointerEvents = useTransform(scrollYProgress, (p) => (p >= start && p <= end ? 'auto' : 'none'));
-  const display = useTransform(scrollYProgress, (p) => (p >= start - 0.015 && p <= end + 0.015 ? 'flex' : 'none'));
+const { start: timelineStart, mid, end } =
+  SCROLL_TIMELINE.MANIFESTO;
 
+const start = timelineStart + 0.025;
+
+const opacity = useTransform(
+  scrollYProgress,
+  [start, start + 0.02, mid, end - 0.02, end],
+  [0, 1, 1, 1, 0]
+);
+
+const y = useTransform(
+  scrollYProgress,
+  [start, start + 0.02, mid, end - 0.02, end],
+  [24, 0, 0, 0, -24]
+);
+
+const pointerEvents = useTransform(
+  scrollYProgress,
+  (p) =>
+    p >= start && p <= end
+      ? 'auto'
+      : 'none'
+);
+
+const display = useTransform(
+  scrollYProgress,
+  (p) =>
+    p >= start && p <= end
+      ? 'flex'
+      : 'none'
+);
   return (
     <motion.div
       style={{ opacity, pointerEvents, display }}
