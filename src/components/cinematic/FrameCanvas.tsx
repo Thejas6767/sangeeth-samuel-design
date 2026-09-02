@@ -7,7 +7,11 @@ import {
 
 import type { MotionValue } from 'framer-motion';
 
-import { TOTAL_FRAMES } from '../shared/constants';
+import {
+  TOTAL_FRAMES,
+  SCROLL_TIMELINE,
+  CINEMATIC_FRAMES,
+} from '../shared/constants';
 
 interface Props {
   scrollYProgress: MotionValue<number>;
@@ -15,114 +19,214 @@ interface Props {
   onLoaded?: () => void;
 }
 
+/*
+|--------------------------------------------------------------------------
+| Helpers
+|--------------------------------------------------------------------------
+*/
+
+const clamp = (value: number, min = 0, max = 1) =>
+  Math.min(max, Math.max(min, value));
+
+const frameForProgress = (
+  progress: number,
+  sectionStart: number,
+  sectionEnd: number,
+  frameStart: number,
+  frameEnd: number
+) => {
+  const localProgress = clamp(
+    (progress - sectionStart) /
+      (sectionEnd - sectionStart)
+  );
+
+  /*
+   * Frame numbers are 1-based.
+   * Canvas image indexes are 0-based.
+   */
+  const startIndex = frameStart - 1;
+  const endIndex = frameEnd - 1;
+
+  return Math.round(
+    startIndex +
+      localProgress *
+        (endIndex - startIndex)
+  );
+};
+
 export function FrameCanvas({
   scrollYProgress,
   onLoadProgress,
   onLoaded,
 }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef =
+    useRef<HTMLCanvasElement>(null);
 
-  const imagesRef = useRef<HTMLImageElement[]>([]);
-  const currentFrameRef = useRef<number>(-1);
-  const rafRef = useRef<number | null>(null);
+  const imagesRef =
+    useRef<HTMLImageElement[]>([]);
 
-  const [ready, setReady] = useState(false);
-  const [showFrames, setShowFrames] = useState(true);
+  const currentFrameRef =
+    useRef<number>(-1);
+
+  const rafRef =
+    useRef<number | null>(null);
+
+  const [ready, setReady] =
+    useState(false);
 
   /*
-   * Keep callbacks in refs so changes to the parent component
-   * never restart the 167-frame preload.
-   */
-  const onLoadProgressRef = useRef(onLoadProgress);
-  const onLoadedRef = useRef(onLoaded);
+  |--------------------------------------------------------------------------
+  | Keep callbacks stable
+  |--------------------------------------------------------------------------
+  */
+
+  const onLoadProgressRef =
+    useRef(onLoadProgress);
+
+  const onLoadedRef =
+    useRef(onLoaded);
 
   useEffect(() => {
-    onLoadProgressRef.current = onLoadProgress;
+    onLoadProgressRef.current =
+      onLoadProgress;
   }, [onLoadProgress]);
 
   useEffect(() => {
-    onLoadedRef.current = onLoaded;
+    onLoadedRef.current =
+      onLoaded;
   }, [onLoaded]);
 
   /*
-   * Draw one frame onto the canvas.
-   */
-  const drawFrame = useCallback((frameIndex: number) => {
-    const canvas = canvasRef.current;
+  |--------------------------------------------------------------------------
+  | Draw frame
+  |--------------------------------------------------------------------------
+  */
 
-    if (!canvas) return;
+  const drawFrame = useCallback(
+    (frameIndex: number) => {
+      const canvas = canvasRef.current;
 
-    const ctx = canvas.getContext('2d', {
-      alpha: false,
-    });
+      if (!canvas) return;
 
-    if (!ctx) return;
+      const ctx = canvas.getContext('2d', {
+        alpha: false,
+      });
 
-    const images = imagesRef.current;
-    const img = images[frameIndex];
+      if (!ctx) return;
 
-    if (!img) return;
-    if (!img.complete) return;
-    if (img.naturalWidth === 0) return;
+      const images =
+        imagesRef.current;
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+      const img =
+        images[frameIndex];
 
-    if (canvasWidth === 0 || canvasHeight === 0) return;
+      if (!img) return;
 
-    const imgWidth = img.naturalWidth;
-    const imgHeight = img.naturalHeight;
+      if (!img.complete) return;
 
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+      if (img.naturalWidth === 0) return;
 
-    /*
-     * Cover behaviour:
-     * the frame completely fills the viewport while
-     * maintaining its original aspect ratio.
-     */
-    const scale = Math.max(
-      canvasWidth / imgWidth,
-      canvasHeight / imgHeight
-    );
+      const canvasWidth =
+        canvas.width;
 
-    const renderWidth = Math.ceil(imgWidth * scale);
-    const renderHeight = Math.ceil(imgHeight * scale);
+      const canvasHeight =
+        canvas.height;
 
-    const offsetX = Math.floor(
-      (canvasWidth - renderWidth) / 2
-    );
+      if (
+        canvasWidth === 0 ||
+        canvasHeight === 0
+      ) {
+        return;
+      }
 
-    const offsetY = Math.floor(
-      (canvasHeight - renderHeight) / 2
-    );
+      const imgWidth =
+        img.naturalWidth;
 
-    /*
-     * Clear first so no previous frame remains visible.
-     */
-    ctx.fillStyle = '#0A0A09';
+      const imgHeight =
+        img.naturalHeight;
 
-    ctx.fillRect(
-      0,
-      0,
-      canvasWidth,
-      canvasHeight
-    );
+      /*
+      |--------------------------------------------------------------------------
+      | Cover image
+      |--------------------------------------------------------------------------
+      */
 
-    ctx.drawImage(
-      img,
-      offsetX,
-      offsetY,
-      renderWidth,
-      renderHeight
-    );
+      const scale = Math.max(
+        canvasWidth / imgWidth,
+        canvasHeight / imgHeight
+      );
 
-    currentFrameRef.current = frameIndex;
-  }, []);
+      const renderWidth =
+        Math.ceil(
+          imgWidth * scale
+        );
+
+      const renderHeight =
+        Math.ceil(
+          imgHeight * scale
+        );
+
+      const offsetX =
+        Math.floor(
+          (canvasWidth -
+            renderWidth) /
+            2
+        );
+
+      const offsetY =
+        Math.floor(
+          (canvasHeight -
+            renderHeight) /
+            2
+        );
+
+      /*
+      |--------------------------------------------------------------------------
+      | Clear canvas
+      |--------------------------------------------------------------------------
+      */
+
+      ctx.fillStyle = '#0A0A09';
+
+      ctx.fillRect(
+        0,
+        0,
+        canvasWidth,
+        canvasHeight
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | Draw frame
+      |--------------------------------------------------------------------------
+      */
+
+      ctx.imageSmoothingEnabled =
+        true;
+
+      ctx.imageSmoothingQuality =
+        'high';
+
+      ctx.drawImage(
+        img,
+        offsetX,
+        offsetY,
+        renderWidth,
+        renderHeight
+      );
+
+      currentFrameRef.current =
+        frameIndex;
+    },
+    []
+  );
 
   /*
-   * Load all cinematic frames once.
-   */
+  |--------------------------------------------------------------------------
+  | Preload all 167 frames
+  |--------------------------------------------------------------------------
+  */
+
   useEffect(() => {
     let mounted = true;
 
@@ -139,52 +243,260 @@ export function FrameCanvas({
 
       loadedCount += 1;
 
-      const progress = Math.min(
-        100,
-        Math.round(
-          (loadedCount / TOTAL_FRAMES) * 100
-        )
+      const progress =
+        Math.min(
+          100,
+          Math.round(
+            (loadedCount /
+              TOTAL_FRAMES) *
+              100
+          )
+        );
+
+      onLoadProgressRef.current?.(
+        progress
       );
 
-      onLoadProgressRef.current?.(progress);
+      /*
+       * All frames are ready.
+       */
+      if (
+        loadedCount ===
+        TOTAL_FRAMES
+      ) {
+        imagesRef.current =
+          images;
 
-      if (loadedCount === TOTAL_FRAMES) {
-        imagesRef.current = images;
-
-        /*
-         * Mark the canvas ready.
-         */
         setReady(true);
 
         /*
-         * Draw the first frame before removing
-         * the preloader.
+         * Draw the correct frame
+         * for the user's CURRENT
+         * scroll position.
          */
         requestAnimationFrame(() => {
           if (!mounted) return;
 
-          drawFrame(0);
+          const currentProgress =
+            clamp(
+              scrollYProgress.get()
+            );
+
+          let frameIndex = 0;
+
+          /*
+           * HERO
+           * 0.00 → 0.10
+           */
+          if (
+            currentProgress >=
+              SCROLL_TIMELINE.HERO.start &&
+            currentProgress <
+              SCROLL_TIMELINE.HERO.end
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.HERO.start,
+                SCROLL_TIMELINE.HERO.end,
+                CINEMATIC_FRAMES.HERO.start,
+                CINEMATIC_FRAMES.HERO.end
+              );
+          }
+
+          /*
+           * MANIFESTO
+           * 0.12 → 0.25
+           */
+          else if (
+            currentProgress >=
+              SCROLL_TIMELINE.MANIFESTO.start &&
+            currentProgress <
+              SCROLL_TIMELINE.MANIFESTO.end
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.MANIFESTO.start,
+                SCROLL_TIMELINE.MANIFESTO.end,
+                CINEMATIC_FRAMES.MANIFESTO.start,
+                CINEMATIC_FRAMES.MANIFESTO.end
+              );
+          }
+
+          /*
+           * PARTNERS
+           * 0.27 → 0.40
+           */
+          else if (
+            currentProgress >=
+              SCROLL_TIMELINE.BRANDS.start &&
+            currentProgress <
+              SCROLL_TIMELINE.BRANDS.end
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.BRANDS.start,
+                SCROLL_TIMELINE.BRANDS.end,
+                CINEMATIC_FRAMES.BRANDS.start,
+                CINEMATIC_FRAMES.BRANDS.end
+              );
+          }
+
+          /*
+           * TRANSITION
+           * 0.40 → 0.43
+           *
+           * Frames 67 → 69
+           */
+          else if (
+            currentProgress >=
+              SCROLL_TIMELINE.BRANDS.end &&
+            currentProgress <
+              SCROLL_TIMELINE.ARCHIVE.start
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.BRANDS.end,
+                SCROLL_TIMELINE.ARCHIVE.start,
+                CINEMATIC_FRAMES.TRANSITION_TO_ARCHIVE.start,
+                CINEMATIC_FRAMES.TRANSITION_TO_ARCHIVE.end
+              );
+          }
+
+          /*
+           * ARCHIVE
+           * 0.43 → 0.67
+           *
+           * Frames 70 → 100
+           */
+          else if (
+            currentProgress >=
+              SCROLL_TIMELINE.ARCHIVE.start &&
+            currentProgress <
+              SCROLL_TIMELINE.ARCHIVE.end
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.ARCHIVE.start,
+                SCROLL_TIMELINE.ARCHIVE.end,
+                CINEMATIC_FRAMES.ARCHIVE.start,
+                CINEMATIC_FRAMES.ARCHIVE.end
+              );
+          }
+
+          /*
+           * PROCESS
+           * 0.69 → 0.78
+           *
+           * Frames 103 → 130
+           */
+          else if (
+            currentProgress >=
+              SCROLL_TIMELINE.PROCESS.start &&
+            currentProgress <
+              SCROLL_TIMELINE.PROCESS.end
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.PROCESS.start,
+                SCROLL_TIMELINE.PROCESS.end,
+                CINEMATIC_FRAMES.PROCESS.start,
+                CINEMATIC_FRAMES.PROCESS.end
+              );
+          }
+
+          /*
+           * FINAL
+           * 0.975 → 1.00
+           *
+           * Frames 150 → 167
+           */
+          else if (
+            currentProgress >=
+              SCROLL_TIMELINE.LOGO_END.start
+          ) {
+            frameIndex =
+              frameForProgress(
+                currentProgress,
+                SCROLL_TIMELINE.LOGO_END.start,
+                SCROLL_TIMELINE.LOGO_END.end,
+                CINEMATIC_FRAMES.FINAL.start,
+                CINEMATIC_FRAMES.FINAL.end
+              );
+          }
+
+          /*
+           * Any gap intentionally remains
+           * black.
+           */
+          else {
+            const canvas =
+              canvasRef.current;
+
+            if (canvas) {
+              const ctx =
+                canvas.getContext(
+                  '2d'
+                );
+
+              if (ctx) {
+                ctx.fillStyle =
+                  '#0A0A09';
+
+                ctx.fillRect(
+                  0,
+                  0,
+                  canvas.width,
+                  canvas.height
+                );
+              }
+            }
+
+            onLoadedRef.current?.();
+
+            return;
+          }
+
+          drawFrame(
+            clamp(
+              frameIndex,
+              0,
+              TOTAL_FRAMES - 1
+            )
+          );
+
           onLoadedRef.current?.();
         });
       }
     };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load every frame
+    |--------------------------------------------------------------------------
+    */
 
     for (
       let i = 1;
       i <= TOTAL_FRAMES;
       i += 1
     ) {
-      const img = new Image();
+      const img =
+        new Image();
 
       img.decoding = 'async';
 
       img.onload = () => {
         if (!mounted) return;
 
-        /*
-         * Decode the image before considering it ready.
-         */
-        if ('decode' in img) {
+        if (
+          'decode' in img
+        ) {
           img
             .decode()
             .then(reportLoaded)
@@ -194,10 +506,6 @@ export function FrameCanvas({
         }
       };
 
-      /*
-       * Count failed frames so one bad image
-       * doesn't freeze the entire experience.
-       */
       img.onerror = () => {
         if (!mounted) return;
 
@@ -205,11 +513,16 @@ export function FrameCanvas({
           `Failed to load frame ${i}`
         );
 
+        /*
+         * Don't allow one bad frame
+         * to stop the entire experience.
+         */
         reportLoaded();
       };
 
       /*
-       * Frames are stored in public/frames/.
+       * IMPORTANT:
+       * public/frames/
        */
       img.src =
         `/frames/ezgif-frame-${pad(i)}.jpg`;
@@ -220,52 +533,64 @@ export function FrameCanvas({
     return () => {
       mounted = false;
     };
-  }, [drawFrame]);
+  }, [
+    drawFrame,
+    scrollYProgress,
+  ]);
 
   /*
-   * Canvas sizing.
-   */
-  const handleResize = useCallback(() => {
-    const canvas = canvasRef.current;
+  |--------------------------------------------------------------------------
+  | Canvas resize
+  |--------------------------------------------------------------------------
+  */
 
-    if (!canvas) return;
+  const handleResize =
+    useCallback(() => {
+      const canvas =
+        canvasRef.current;
 
-    const rect =
-      canvas.getBoundingClientRect();
+      if (!canvas) return;
 
-    const dpr = Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
+      const rect =
+        canvas.getBoundingClientRect();
 
-    const width = Math.max(
-      1,
-      Math.floor(rect.width * dpr)
-    );
+      const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        2
+      );
 
-    const height = Math.max(
-      1,
-      Math.floor(rect.height * dpr)
-    );
+      const width =
+        Math.max(
+          1,
+          Math.floor(
+            rect.width * dpr
+          )
+        );
 
-    if (
-      canvas.width !== width ||
-      canvas.height !== height
-    ) {
-      canvas.width = width;
-      canvas.height = height;
-    }
+      const height =
+        Math.max(
+          1,
+          Math.floor(
+            rect.height * dpr
+          )
+        );
 
-    /*
-     * Always redraw the currently visible frame
-     * after resizing.
-     */
-    if (currentFrameRef.current >= 0) {
-      drawFrame(currentFrameRef.current);
-    } else if (imagesRef.current[0]) {
-      drawFrame(0);
-    }
-  }, [drawFrame]);
+      if (
+        canvas.width !== width ||
+        canvas.height !== height
+      ) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      if (
+        currentFrameRef.current >= 0
+      ) {
+        drawFrame(
+          currentFrameRef.current
+        );
+      }
+    }, [drawFrame]);
 
   useEffect(() => {
     handleResize();
@@ -285,272 +610,291 @@ export function FrameCanvas({
   }, [handleResize]);
 
   /*
-   * Scroll → frame synchronization.
-   *
-   * IMPORTANT:
-   * Each cinematic section has its own frame range.
-   *
-   * The transition gaps are now BLANK.
-   * We do NOT hold the previous section's frame.
-   *
-   * HERO        : 001 → 016
-   * MANIFESTO   : 020 → 041
-   * PARTNERS    : 045 → 066
-   * ARCHIVE     : 070 → 100
-   * METHODOLOGY : 103 → 130
-   *
-   * Frames 131 → 149 are NEVER displayed.
-   *
-   * FINAL       : 150 → 167
-   */
+  |--------------------------------------------------------------------------
+  | SCROLL → FRAME
+  |--------------------------------------------------------------------------
+  */
+
   useEffect(() => {
-    const unsubscribe = scrollYProgress.on(
-      'change',
-      (progress) => {
-        if (
-          imagesRef.current.length !==
-          TOTAL_FRAMES
-        ) {
-          return;
-        }
+    const unsubscribe =
+      scrollYProgress.on(
+        'change',
+        (progress) => {
+          if (
+            imagesRef.current.length !==
+            TOTAL_FRAMES
+          ) {
+            return;
+          }
 
-        const clamped = Math.max(
-          0,
-          Math.min(1, progress)
-        );
+          const p =
+            clamp(progress);
 
-        let targetFrame = 0;
-        let shouldShowFrames = true;
+          let targetFrame: number | null =
+            null;
 
-        /*
-         * =====================================================
-         * HERO
-         * 0.00 → 0.09
-         * Frame 001 → 016
-         * =====================================================
-         */
-        if (clamped <= 0.09) {
-          const sectionProgress =
-            clamped / 0.09;
+          /*
+          |--------------------------------------------------------------------------
+          | HERO
+          |--------------------------------------------------------------------------
+          */
 
-          targetFrame = Math.round(
-            sectionProgress * 15
+          if (
+            p >=
+              SCROLL_TIMELINE.HERO.start &&
+            p <
+              SCROLL_TIMELINE.HERO.end
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.HERO.start,
+                SCROLL_TIMELINE.HERO.end,
+                CINEMATIC_FRAMES.HERO.start,
+                CINEMATIC_FRAMES.HERO.end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | MANIFESTO
+          |--------------------------------------------------------------------------
+          */
+
+          else if (
+            p >=
+              SCROLL_TIMELINE.MANIFESTO.start &&
+            p <
+              SCROLL_TIMELINE.MANIFESTO.end
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.MANIFESTO.start,
+                SCROLL_TIMELINE.MANIFESTO.end,
+                CINEMATIC_FRAMES.MANIFESTO.start,
+                CINEMATIC_FRAMES.MANIFESTO.end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | PARTNERS
+          |--------------------------------------------------------------------------
+          */
+
+          else if (
+            p >=
+              SCROLL_TIMELINE.BRANDS.start &&
+            p <
+              SCROLL_TIMELINE.BRANDS.end
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.BRANDS.start,
+                SCROLL_TIMELINE.BRANDS.end,
+                CINEMATIC_FRAMES.BRANDS.start,
+                CINEMATIC_FRAMES.BRANDS.end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | TRANSITION TO ARCHIVE
+          |--------------------------------------------------------------------------
+          |
+          | Frames 67 → 69
+          |
+          */
+
+          else if (
+            p >=
+              SCROLL_TIMELINE.BRANDS.end &&
+            p <
+              SCROLL_TIMELINE.ARCHIVE.start
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.BRANDS.end,
+                SCROLL_TIMELINE.ARCHIVE.start,
+                CINEMATIC_FRAMES
+                  .TRANSITION_TO_ARCHIVE
+                  .start,
+                CINEMATIC_FRAMES
+                  .TRANSITION_TO_ARCHIVE
+                  .end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | ARCHIVE
+          |--------------------------------------------------------------------------
+          |
+          | Frames 70 → 100
+          |
+          */
+
+          else if (
+            p >=
+              SCROLL_TIMELINE.ARCHIVE.start &&
+            p <
+              SCROLL_TIMELINE.ARCHIVE.end
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.ARCHIVE.start,
+                SCROLL_TIMELINE.ARCHIVE.end,
+                CINEMATIC_FRAMES.ARCHIVE.start,
+                CINEMATIC_FRAMES.ARCHIVE.end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | PROCESS / METHODOLOGY
+          |--------------------------------------------------------------------------
+          |
+          | Frames 103 → 130
+          |
+          */
+
+          else if (
+            p >=
+              SCROLL_TIMELINE.PROCESS.start &&
+            p <
+              SCROLL_TIMELINE.PROCESS.end
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.PROCESS.start,
+                SCROLL_TIMELINE.PROCESS.end,
+                CINEMATIC_FRAMES.PROCESS.start,
+                CINEMATIC_FRAMES.PROCESS.end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | FINAL
+          |--------------------------------------------------------------------------
+          |
+          | Frames 150 → 167
+          |
+          */
+
+          else if (
+            p >=
+            SCROLL_TIMELINE.LOGO_END.start
+          ) {
+            targetFrame =
+              frameForProgress(
+                p,
+                SCROLL_TIMELINE.LOGO_END.start,
+                SCROLL_TIMELINE.LOGO_END.end,
+                CINEMATIC_FRAMES.FINAL.start,
+                CINEMATIC_FRAMES.FINAL.end
+              );
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | Intentional blank ranges
+          |--------------------------------------------------------------------------
+          |
+          | .10 → .12
+          | .25 → .27
+          | .67 → .69
+          | .78 → .80
+          | .89 → .90
+          | .965 → .975
+          |
+          */
+
+          else {
+            targetFrame = null;
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | Blank transition
+          |--------------------------------------------------------------------------
+          */
+
+          if (targetFrame === null) {
+            const canvas =
+              canvasRef.current;
+
+            if (canvas) {
+              const ctx =
+                canvas.getContext(
+                  '2d'
+                );
+
+              if (ctx) {
+                ctx.fillStyle =
+                  '#0A0A09';
+
+                ctx.fillRect(
+                  0,
+                  0,
+                  canvas.width,
+                  canvas.height
+                );
+              }
+            }
+
+            currentFrameRef.current =
+              -1;
+
+            return;
+          }
+
+          targetFrame = clamp(
+            targetFrame,
+            0,
+            TOTAL_FRAMES - 1
           );
-        }
 
-        /*
-         * =====================================================
-         * HERO → MANIFESTO GAP
-         * 0.09 → 0.12
-         *
-         * BLANK
-         *
-         * Previously frame 016 was being held here.
-         * That hold is removed.
-         * =====================================================
-         */
-        else if (clamped < 0.12) {
-          targetFrame = 15;
-          shouldShowFrames = false;
-        }
+          if (
+            targetFrame ===
+            currentFrameRef.current
+          ) {
+            return;
+          }
 
-        /*
-         * =====================================================
-         * MANIFESTO
-         * 0.12 → 0.24
-         * Frame 020 → 041
-         * =====================================================
-         */
-        else if (clamped <= 0.24) {
-          const sectionProgress =
-            (clamped - 0.12) / 0.12;
+          if (
+            rafRef.current !== null
+          ) {
+            cancelAnimationFrame(
+              rafRef.current
+            );
+          }
 
-          targetFrame =
-            19 +
-            Math.round(
-              sectionProgress * 21
+          rafRef.current =
+            requestAnimationFrame(
+              () => {
+                drawFrame(
+                  targetFrame as number
+                );
+
+                rafRef.current =
+                  null;
+              }
             );
         }
-
-        /*
-         * =====================================================
-         * MANIFESTO → PARTNERS GAP
-         * 0.24 → 0.27
-         *
-         * BLANK
-         *
-         * Previously frame 041 was being held here.
-         * =====================================================
-         */
-        else if (clamped < 0.27) {
-  shouldShowFrames = false;
-}
-
-        /*
-         * =====================================================
-         * PARTNERS / COMMISSION
-         * 0.27 → 0.39
-         * Frame 045 → 066
-         * =====================================================
-         */
-        else if (clamped <= 0.39) {
-  const sectionProgress =
-    (clamped - 0.27) / 0.12;
-
-  targetFrame =
-    44 +
-    Math.round(
-      sectionProgress * 21
-    );
-
-  shouldShowFrames = true;
-}
-
-        /*
-         * =====================================================
-         * PARTNERS → ARCHIVE GAP
-         * 0.39 → 0.42
-         *
-         * BLANK
-         *
-         * Previously frame 066 was being held here.
-         * =====================================================
-         */
-        else if (clamped < 0.42) {
-          targetFrame = 65;
-          shouldShowFrames = false;
-        }
-
-        /*
-         * =====================================================
-         * ARCHIVE
-         * 0.42 → 0.58
-         * Frame 070 → 100
-         * =====================================================
-         */
-        else if (clamped <= 0.58) {
-          const sectionProgress =
-            (clamped - 0.42) / 0.16;
-
-          targetFrame =
-            69 +
-            Math.round(
-              sectionProgress * 30
-            );
-        }
-
-        /*
-         * =====================================================
-         * ARCHIVE → METHODOLOGY GAP
-         * 0.58 → 0.61
-         *
-         * BLANK
-         *
-         * Previously frame 100 was being held here.
-         * =====================================================
-         */
-        else if (clamped < 0.61) {
-          targetFrame = 99;
-          shouldShowFrames = false;
-        }
-
-        /*
-         * =====================================================
-         * METHODOLOGY
-         * 0.61 → 0.76
-         * Frame 103 → 130
-         * =====================================================
-         */
-        else if (clamped <= 0.76) {
-          const sectionProgress =
-            (clamped - 0.61) / 0.15;
-
-          targetFrame =
-            102 +
-            Math.round(
-              sectionProgress * 27
-            );
-        }
-
-        /*
-         * =====================================================
-         * FOUNDER + CONTACT
-         * 0.76 → 0.97
-         *
-         * COMPLETELY BLANK.
-         *
-         * Frames 131 → 149 are never displayed.
-         * =====================================================
-         */
-        else if (clamped < 0.97) {
-          targetFrame = 129;
-          shouldShowFrames = false;
-        }
-
-        /*
-         * =====================================================
-         * FINAL CINEMATIC SEQUENCE
-         * 0.97 → 1.00
-         * Frame 150 → 167
-         * =====================================================
-         */
-        else {
-          const endingProgress =
-            (clamped - 0.97) / 0.03;
-
-          targetFrame =
-            149 +
-            Math.round(
-              endingProgress * 17
-            );
-
-          shouldShowFrames = true;
-        }
-
-        /*
-         * Safety clamp.
-         */
-        targetFrame = Math.max(
-          0,
-          Math.min(
-            TOTAL_FRAMES - 1,
-            targetFrame
-          )
-        );
-
-        /*
-         * Show / hide cinematic canvas.
-         */
-        setShowFrames(shouldShowFrames);
-
-        /*
-         * Don't redraw if the frame hasn't changed.
-         */
-        if (
-          targetFrame ===
-          currentFrameRef.current
-        ) {
-          return;
-        }
-
-        if (rafRef.current !== null) {
-          cancelAnimationFrame(
-            rafRef.current
-          );
-        }
-
-        rafRef.current =
-          requestAnimationFrame(() => {
-            drawFrame(targetFrame);
-            rafRef.current = null;
-          });
-      }
-    );
+      );
 
     return () => {
       unsubscribe();
 
-      if (rafRef.current !== null) {
+      if (
+        rafRef.current !== null
+      ) {
         cancelAnimationFrame(
           rafRef.current
         );
@@ -558,7 +902,16 @@ export function FrameCanvas({
         rafRef.current = null;
       }
     };
-  }, [scrollYProgress, drawFrame]);
+  }, [
+    scrollYProgress,
+    drawFrame,
+  ]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Render
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <div
@@ -578,14 +931,15 @@ export function FrameCanvas({
           h-full
           will-change-transform
         "
-       style={{
-  opacity: ready && showFrames ? 1 : 0,
-  transition: 'none',
-}}
+        style={{
+          opacity: ready ? 1 : 0,
+          transition:
+            'opacity 500ms cubic-bezier(0.76, 0, 0.24, 1)',
+        }}
         aria-hidden="true"
       />
 
-      {/* Cinematic readability treatment */}
+      {/* Bottom readability treatment */}
       <div
         className="
           pointer-events-none
@@ -600,6 +954,7 @@ export function FrameCanvas({
         "
       />
 
+      {/* Top readability treatment */}
       <div
         className="
           pointer-events-none
