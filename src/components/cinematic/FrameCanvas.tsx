@@ -4,7 +4,9 @@ import {
   useRef,
   useState,
 } from 'react';
+
 import type { MotionValue } from 'framer-motion';
+
 import { TOTAL_FRAMES } from '../shared/constants';
 
 interface Props {
@@ -25,7 +27,8 @@ export function FrameCanvas({
   const rafRef = useRef<number | null>(null);
 
   const [ready, setReady] = useState(false);
-const [showFrames, setShowFrames] = useState(true);
+  const [showFrames, setShowFrames] = useState(true);
+
   /*
    * Keep callbacks in refs so changes to the parent component
    * never restart the 167-frame preload.
@@ -98,6 +101,7 @@ const [showFrames, setShowFrames] = useState(true);
      * Clear first so no previous frame remains visible.
      */
     ctx.fillStyle = '#0A0A09';
+
     ctx.fillRect(
       0,
       0,
@@ -205,9 +209,7 @@ const [showFrames, setShowFrames] = useState(true);
       };
 
       /*
-       * IMPORTANT:
-       * The actual repository stores frames in
-       * public/frames/.
+       * Frames are stored in public/frames/.
        */
       img.src =
         `/frames/ezgif-frame-${pad(i)}.jpg`;
@@ -284,125 +286,279 @@ const [showFrames, setShowFrames] = useState(true);
 
   /*
    * Scroll → frame synchronization.
+   *
+   * IMPORTANT:
+   * Each cinematic section has its own frame range.
+   *
+   * The transition gaps are now BLANK.
+   * We do NOT hold the previous section's frame.
+   *
+   * HERO        : 001 → 016
+   * MANIFESTO   : 020 → 041
+   * PARTNERS    : 045 → 066
+   * ARCHIVE     : 070 → 100
+   * METHODOLOGY : 103 → 130
+   *
+   * Frames 131 → 149 are NEVER displayed.
+   *
+   * FINAL       : 150 → 167
    */
- useEffect(() => {
-  const unsubscribe = scrollYProgress.on(
-    'change',
-    (progress) => {
-      if (
-        imagesRef.current.length !==
-        TOTAL_FRAMES
-      ) {
-        return;
-      }
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on(
+      'change',
+      (progress) => {
+        if (
+          imagesRef.current.length !==
+          TOTAL_FRAMES
+        ) {
+          return;
+        }
 
-      const clamped = Math.max(
-        0,
-        Math.min(1, progress)
-      );
+        const clamped = Math.max(
+          0,
+          Math.min(1, progress)
+        );
 
-      let targetFrame: number;
+        let targetFrame = 0;
+        let shouldShowFrames = true;
 
-      /*
-       * 0.00 → 0.76
-       *
-       * Main cinematic sequence.
-       * Only frames 1 → 130.
-       */
-     if (clamped <= 0.76) {
-  const mainProgress =
-    clamped / 0.76;
+        /*
+         * =====================================================
+         * HERO
+         * 0.00 → 0.09
+         * Frame 001 → 016
+         * =====================================================
+         */
+        if (clamped <= 0.09) {
+          const sectionProgress =
+            clamped / 0.09;
 
-  targetFrame = Math.round(
-    mainProgress * 129
-  );
+          targetFrame = Math.round(
+            sectionProgress * 15
+          );
+        }
+
+        /*
+         * =====================================================
+         * HERO → MANIFESTO GAP
+         * 0.09 → 0.12
+         *
+         * BLANK
+         *
+         * Previously frame 016 was being held here.
+         * That hold is removed.
+         * =====================================================
+         */
+        else if (clamped < 0.12) {
+          targetFrame = 15;
+          shouldShowFrames = false;
+        }
+
+        /*
+         * =====================================================
+         * MANIFESTO
+         * 0.12 → 0.24
+         * Frame 020 → 041
+         * =====================================================
+         */
+        else if (clamped <= 0.24) {
+          const sectionProgress =
+            (clamped - 0.12) / 0.12;
+
+          targetFrame =
+            19 +
+            Math.round(
+              sectionProgress * 21
+            );
+        }
+
+        /*
+         * =====================================================
+         * MANIFESTO → PARTNERS GAP
+         * 0.24 → 0.27
+         *
+         * BLANK
+         *
+         * Previously frame 041 was being held here.
+         * =====================================================
+         */
+        else if (clamped < 0.27) {
+  shouldShowFrames = false;
 }
 
-      /*
-       * 0.76 → 0.97
-       *
-       * Founder + Contact.
-       *
-       * No cinematic frame is displayed.
-       */
-      else if (clamped < 0.97) {
-        targetFrame = 129;
-      }
+        /*
+         * =====================================================
+         * PARTNERS / COMMISSION
+         * 0.27 → 0.39
+         * Frame 045 → 066
+         * =====================================================
+         */
+        else if (clamped <= 0.39) {
+  const sectionProgress =
+    (clamped - 0.27) / 0.12;
 
-      /*
-       * 0.97 → 1.00
-       *
-       * Final cinematic sequence.
-       *
-       * Frame 150 → Frame 167.
-       */
-      else {
-        const endingProgress =
-          (clamped - 0.97) / 0.03;
+  targetFrame =
+    44 +
+    Math.round(
+      sectionProgress * 21
+    );
 
-        targetFrame =
-          149 +
-          Math.round(
-            endingProgress * 17
+  shouldShowFrames = true;
+}
+
+        /*
+         * =====================================================
+         * PARTNERS → ARCHIVE GAP
+         * 0.39 → 0.42
+         *
+         * BLANK
+         *
+         * Previously frame 066 was being held here.
+         * =====================================================
+         */
+        else if (clamped < 0.42) {
+          targetFrame = 65;
+          shouldShowFrames = false;
+        }
+
+        /*
+         * =====================================================
+         * ARCHIVE
+         * 0.42 → 0.58
+         * Frame 070 → 100
+         * =====================================================
+         */
+        else if (clamped <= 0.58) {
+          const sectionProgress =
+            (clamped - 0.42) / 0.16;
+
+          targetFrame =
+            69 +
+            Math.round(
+              sectionProgress * 30
+            );
+        }
+
+        /*
+         * =====================================================
+         * ARCHIVE → METHODOLOGY GAP
+         * 0.58 → 0.61
+         *
+         * BLANK
+         *
+         * Previously frame 100 was being held here.
+         * =====================================================
+         */
+        else if (clamped < 0.61) {
+          targetFrame = 99;
+          shouldShowFrames = false;
+        }
+
+        /*
+         * =====================================================
+         * METHODOLOGY
+         * 0.61 → 0.76
+         * Frame 103 → 130
+         * =====================================================
+         */
+        else if (clamped <= 0.76) {
+          const sectionProgress =
+            (clamped - 0.61) / 0.15;
+
+          targetFrame =
+            102 +
+            Math.round(
+              sectionProgress * 27
+            );
+        }
+
+        /*
+         * =====================================================
+         * FOUNDER + CONTACT
+         * 0.76 → 0.97
+         *
+         * COMPLETELY BLANK.
+         *
+         * Frames 131 → 149 are never displayed.
+         * =====================================================
+         */
+        else if (clamped < 0.97) {
+          targetFrame = 129;
+          shouldShowFrames = false;
+        }
+
+        /*
+         * =====================================================
+         * FINAL CINEMATIC SEQUENCE
+         * 0.97 → 1.00
+         * Frame 150 → 167
+         * =====================================================
+         */
+        else {
+          const endingProgress =
+            (clamped - 0.97) / 0.03;
+
+          targetFrame =
+            149 +
+            Math.round(
+              endingProgress * 17
+            );
+
+          shouldShowFrames = true;
+        }
+
+        /*
+         * Safety clamp.
+         */
+        targetFrame = Math.max(
+          0,
+          Math.min(
+            TOTAL_FRAMES - 1,
+            targetFrame
+          )
+        );
+
+        /*
+         * Show / hide cinematic canvas.
+         */
+        setShowFrames(shouldShowFrames);
+
+        /*
+         * Don't redraw if the frame hasn't changed.
+         */
+        if (
+          targetFrame ===
+          currentFrameRef.current
+        ) {
+          return;
+        }
+
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(
+            rafRef.current
           );
-      }
+        }
 
-      targetFrame = Math.max(
-        0,
-        Math.min(
-          TOTAL_FRAMES - 1,
-          targetFrame
-        )
-      );
-
-      /*
-       * Show cinematic only during:
-       *
-       * 0.00 → 0.76
-       * 0.97 → 1.00
-       */
-      if (
-        clamped <= 0.76 ||
-        clamped >= 0.97
-      ) {
-        setShowFrames(true);
-      } else {
-        setShowFrames(false);
+        rafRef.current =
+          requestAnimationFrame(() => {
+            drawFrame(targetFrame);
+            rafRef.current = null;
+          });
       }
+    );
 
-      if (
-        targetFrame ===
-        currentFrameRef.current
-      ) {
-        return;
-      }
+    return () => {
+      unsubscribe();
 
       if (rafRef.current !== null) {
         cancelAnimationFrame(
           rafRef.current
         );
+
+        rafRef.current = null;
       }
-
-      rafRef.current =
-        requestAnimationFrame(() => {
-          drawFrame(targetFrame);
-          rafRef.current = null;
-        });
-    }
-  );
-
-  return () => {
-    unsubscribe();
-
-    if (rafRef.current !== null) {
-      cancelAnimationFrame(
-        rafRef.current
-      );
-
-      rafRef.current = null;
-    }
-  };
-}, [scrollYProgress, drawFrame]);
+    };
+  }, [scrollYProgress, drawFrame]);
 
   return (
     <div
@@ -422,10 +578,9 @@ const [showFrames, setShowFrames] = useState(true);
           h-full
           will-change-transform
         "
-style={{
+       style={{
   opacity: ready && showFrames ? 1 : 0,
-  transition:
-    'opacity 500ms cubic-bezier(0.76, 0, 0.24, 1)',
+  transition: 'none',
 }}
         aria-hidden="true"
       />

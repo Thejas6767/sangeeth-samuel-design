@@ -33,19 +33,17 @@ function MarqueeRow({
           <div key={`${brand.name}-${i}`} className="flex items-center">
             <div className="group px-7 sm:px-12 md:px-16">
               <div
-                className="whitespace-nowrap text-[15px] font-black tracking-[0.04em] text-white/60 transition-colors duration-500 group-hover:text-white sm:text-[18px] md:text-[21px]"
-                style={{ fontFamily: FONT_DISPLAY }}
+className="whitespace-nowrap text-[15px] font-black tracking-[0.04em] text-[#F2F1EC] transition-colors duration-500 group-hover:text-white sm:text-[18px] md:text-[21px]"                style={{ fontFamily: FONT_DISPLAY }}
               >
                 {brand.name}
               </div>
               <div
-                className="mt-1 whitespace-nowrap text-[8px] uppercase tracking-[0.2em] text-white/30 transition-colors duration-500 group-hover:text-white/55"
-                style={{ fontFamily: FONT_MONO }}
+className="mt-1 whitespace-nowrap text-[8px] uppercase tracking-[0.2em] text-[#8C8C87] transition-colors duration-500 group-hover:text-[#F2F1EC]"                style={{ fontFamily: FONT_MONO }}
               >
                 {brand.label}
               </div>
             </div>
-            <span className="h-px w-7 bg-white/10 sm:w-12" />
+            <span className="h-px w-7 bg-[#8C8C87]/30 sm:w-12" />
           </div>
         ))}
       </motion.div>
@@ -81,7 +79,7 @@ className="absolute inset-0 z-30 flex items-center justify-center bg-transparent
           </p>
         </div>
 
-        <div className="border-y border-white/10 bg-transparent">
+        <div className="border-y border-[#8C8C87]/30 bg-transparent">
           <MarqueeRow items={BRAND_PARTNERS} direction="left" duration={42} />
           <div className="h-px w-full bg-white/[0.06]" />
           <MarqueeRow items={[...BRAND_PARTNERS].reverse()} direction="right" duration={48} />
