@@ -288,8 +288,15 @@ export function BrandsOverlay({
             COMMISSIONED BY CHAMPIONSHIPS
           </Eyebrow>
 
-          <h2
-            className="
+          <motion.h2
+  initial={{ opacity: 0, y: 24 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{
+    duration: 0.9,
+    delay: 0.2,
+    ease: [0.76, 0, 0.24, 1],
+  }}
+  className="
               mt-4
               max-w-3xl
               text-[1.65rem]
@@ -307,10 +314,17 @@ export function BrandsOverlay({
           >
             Built for national rallies
             and motorsport championships.
-          </h2>
+          </motion.h2>
 
-          <p
-            className="
+        <motion.p
+  initial={{ opacity: 0, y: 18 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.4,
+    ease: [0.76, 0, 0.24, 1],
+  }}
+  className="
               mt-4
               max-w-lg
               text-[13px]
@@ -327,7 +341,7 @@ export function BrandsOverlay({
             under FMSCI, 6t9th crafts
             one-of-a-kind trophies for
             moments that become legacy.
-          </p>
+          </motion.p>
         </div>
 
         <div

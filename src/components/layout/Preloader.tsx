@@ -17,7 +17,7 @@ export function Preloader({ progress }: Props) {
 
       <div className="my-auto flex flex-col items-center text-center">
         <div className="mb-6 flex h-10 w-10 items-center justify-center border border-white/20 font-mono text-[9px] tracking-[0.18em] text-white/70" style={{ fontFamily: FONT_MONO }}>SS</div>
-        <div className="text-[1.3rem] font-black tracking-[0.04em] sm:text-[1.8rem]" style={{ fontFamily: FONT_DISPLAY }}>SCULPTING VICTORY</div>
+        <div className="text-[1.3rem] font-black tracking-[0.04em] sm:text-[1.8rem]" style={{ fontFamily: FONT_DISPLAY }}>SANGEETH SAMUEL DESIGN</div>
         <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.22em] text-white/35" style={{ fontFamily: FONT_MONO }}>LOADING CINEMATIC ATELIER</p>
 
         <div className="mt-9 w-56 sm:w-72">

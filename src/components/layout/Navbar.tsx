@@ -209,7 +209,7 @@ export function Navbar({
     sm:px-5
     ${
       scrolled && !menuOpen
-        ? 'border border-white/15 bg-[#0A0A09]/85 py-3 backdrop-blur-xl'
+     ? 'border border-white/15 bg-[#0A0A09]/85 py-3 backdrop-blur-xl rounded-2xl'
         : 'py-2'
     }
   `}
@@ -304,20 +304,21 @@ export function Navbar({
                   }}
                 >
                   {link.label}
-
-                  <span
-                    className="
-                      absolute
-                      bottom-0
-                      left-0
-                      h-[2px]
-                      w-0
-                      bg-white
-                      transition-all
-                      duration-500
-                      group-hover:w-full
-                    "
-                  />
+<span
+  className="
+    absolute
+    bottom-0
+    left-1/2
+    h-px
+    w-0
+    -translate-x-1/2
+    bg-white
+    transition-all
+    duration-500
+    ease-out
+    group-hover:w-full
+  "
+/>
                 </motion.button>
               ),
             )}
@@ -327,19 +328,24 @@ export function Navbar({
 
           <button
             type="button"
-            className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              border
-              border-white/20
-              bg-[#0A0A09]/40
-              text-white
-              focus-premium
-              md:hidden
-            "
+           className="
+  flex
+  h-12
+  w-12
+  items-center
+  justify-center
+  border
+  border-white/20
+  bg-[#0A0A09]/40
+  text-white
+  transition-all
+  duration-300
+  hover:border-white/50
+  hover:bg-white/10
+  active:scale-95
+  focus-premium
+  md:hidden
+"
             aria-label={
               menuOpen
                 ? 'Close navigation menu'
@@ -441,19 +447,24 @@ export function Navbar({
                         250,
                       );
                     }}
-                    className="
-                      border-b
-                      border-white/10
-                      py-4
-                      text-left
-                      text-[2.5rem]
-                      font-black
-                      leading-none
-                      tracking-[-0.04em]
-                      text-white
-                      focus-premium
-                      sm:text-[3.5rem]
-                    "
+                className="
+  group
+  border-b
+  border-white/10
+  py-4
+  text-left
+  text-[2.5rem]
+  font-black
+  leading-none
+  tracking-[-0.04em]
+  text-white
+  transition-all
+  duration-300
+  hover:pl-2
+  hover:border-white/40
+  focus-premium
+  sm:text-[3.5rem]
+"
                     style={{
                       fontFamily:
                         FONT_DISPLAY,
@@ -489,10 +500,13 @@ export function Navbar({
                 href="https://www.instagram.com/the6t9th/"
                 target="_blank"
                 rel="noreferrer"
-                className="
-                  transition-colors
-                  hover:text-white
-                "
+              className="
+  inline-block
+  transition-all
+  duration-300
+  hover:translate-x-1
+  hover:text-white
+"
               >
                 INSTAGRAM
               </a>
@@ -502,9 +516,12 @@ export function Navbar({
                 target="_blank"
                 rel="noreferrer"
                 className="
-                  transition-colors
-                  hover:text-white
-                "
+  inline-block
+  transition-all
+  duration-300
+  hover:translate-x-1
+  hover:text-white
+"
               >
                 FACEBOOK
               </a>

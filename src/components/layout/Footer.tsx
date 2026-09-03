@@ -1,4 +1,5 @@
 import { ArrowUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { FONT_DISPLAY, FONT_MONO, NAV_LINKS } from '../shared/constants';
 import { playSound } from '../../utils/audioEngine';
 
@@ -16,8 +17,16 @@ export function Footer() {
   return (
     <footer className="relative w-full border-t border-[#232320] bg-[#0A0A09] px-6 py-14 text-white sm:py-20 md:px-12 lg:px-16">
       <div className="mx-auto max-w-[1440px]">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_0.7fr] md:gap-8">
-          <div>
+<motion.div
+  initial={{ opacity: 0, y: 24 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.2 }}
+  transition={{
+    duration: 0.8,
+    ease: [0.76, 0, 0.24, 1],
+  }}
+  className="grid gap-12 md:grid-cols-[1.4fr_1fr_0.7fr] md:gap-8"
+>          <div>
             <div className="text-[1.65rem] font-black leading-[0.9] tracking-[-0.035em] sm:text-[2rem]" style={{ fontFamily: FONT_DISPLAY }}>
               SANGEETH
               <br />
@@ -50,7 +59,7 @@ export function Footer() {
               <ArrowUp size={12} strokeWidth={1.2} className="transition-transform duration-500 group-hover:-translate-y-0.5" />
             </button>
           </div>
-        </div>
+        </motion.div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-[#232320] pt-5 font-mono text-[7px] tracking-[0.16em] text-[#5c5c58] sm:flex-row sm:items-center sm:justify-between sm:text-[8px]" style={{ fontFamily: FONT_MONO }}>
           <span>© {new Date().getFullYear()} SANGEETH SAMUEL DESIGN (6T9TH). ALL RIGHTS RESERVED.</span>

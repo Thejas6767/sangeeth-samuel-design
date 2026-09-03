@@ -21,56 +21,50 @@ interface Props {
 export function ManifestoOverlay({
   scrollYProgress,
 }: Props) {
-  const {
-    start,
-    end,
-  } = SCROLL_TIMELINE.MANIFESTO;
+  const { start, end } = SCROLL_TIMELINE.MANIFESTO;
 
-  /*
-  |--------------------------------------------------------------------------
-  | Text visibility
-  |--------------------------------------------------------------------------
-  |
-  | Small fade only at the section edges.
-  |
-  | The text stays completely still in the
-  | middle of the section.
-  |--------------------------------------------------------------------------
-  */
+  // Simple fade + vertical movement for the entire section
+  const opacity = useTransform(
+    scrollYProgress,
+    [
+      start,
+      start + 0.02,
+      start + 0.04,
+      end - 0.04,
+      end - 0.02,
+      end,
+    ],
+    [0, 1, 1, 1, 1, 0],
+  );
 
-  const opacity =
-    useTransform(
-      scrollYProgress,
-      [
-        start,
-        start + 0.015,
-        start + 0.04,
-        end - 0.04,
-        end - 0.015,
-        end,
-      ],
-      [0, 1, 1, 1, 1, 0],
-    );
+  const y = useTransform(
+    scrollYProgress,
+    [
+      start,
+      start + 0.02,
+      start + 0.04,
+      end - 0.04,
+      end - 0.02,
+      end,
+    ],
+    [24, 0, 0, 0, 0, -24],
+  );
 
-  const pointerEvents =
-    useTransform(
-      scrollYProgress,
-      (p) =>
-        p >= start &&
-        p < end
-          ? 'auto'
-          : 'none',
-    );
+  const pointerEvents = useTransform(
+    scrollYProgress,
+    (p) =>
+      p >= start && p < end
+        ? 'auto'
+        : 'none',
+  );
 
-  const display =
-    useTransform(
-      scrollYProgress,
-      (p) =>
-        p >= start &&
-        p < end
-          ? 'flex'
-          : 'none',
-    );
+  const display = useTransform(
+    scrollYProgress,
+    (p) =>
+      p >= start && p < end
+        ? 'flex'
+        : 'none',
+  );
 
   return (
     <motion.div
@@ -96,6 +90,7 @@ export function ManifestoOverlay({
         lg:px-16
       "
     >
+      {/* CHAPTER */}
       <ChapterMark
         index={2}
         total={8}
@@ -111,7 +106,9 @@ export function ManifestoOverlay({
         "
       />
 
-      <div
+      {/* CONTENT */}
+      <motion.div
+        style={{ y }}
         className="
           mx-auto
           grid
@@ -123,7 +120,17 @@ export function ManifestoOverlay({
           lg:gap-16
         "
       >
-        <div className="lg:col-span-3">
+        {/* LEFT */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{
+            duration: 0.8,
+            delay: 0.1,
+            ease: [0.76, 0, 0.24, 1],
+          }}
+          className="lg:col-span-3"
+        >
           <Eyebrow dark={false}>
             MANIFESTO
           </Eyebrow>
@@ -143,37 +150,48 @@ export function ManifestoOverlay({
           >
             ATELIER PHILOSOPHY
           </div>
-        </div>
+        </motion.div>
 
+        {/* RIGHT */}
         <div className="lg:col-span-9">
-          <h2
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.9,
+              delay: 0.2,
+              ease: [0.76, 0, 0.24, 1],
+            }}
             style={{
-              fontFamily:
-                FONT_DISPLAY,
+              fontFamily: FONT_DISPLAY,
               fontWeight: 900,
-              letterSpacing:
-                '-0.045em',
+              letterSpacing: '-0.045em',
               lineHeight: 0.94,
-              fontSize:
-                'clamp(2.2rem, 5.4vw, 4.7rem)',
+              fontSize: 'clamp(2.2rem, 5.4vw, 4.7rem)',
             }}
           >
             A TROPHY IS NOT AN
+            <br />
             OBJECT.
-          </h2>
+          </motion.h2>
 
-          <p
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.35,
+              ease: [0.76, 0, 0.24, 1],
+            }}
             className="
               mt-8
               max-w-3xl
             "
             style={{
               fontFamily: FONT_BODY,
-              fontSize:
-                'clamp(15px, 1.65vw, 19px)',
+              fontSize: 'clamp(15px, 1.65vw, 19px)',
               lineHeight: 1.7,
-              color:
-                'rgba(242, 241, 236, 0.78)',
+              color: 'rgba(242, 241, 236, 0.78)',
               fontWeight: 500,
             }}
           >
@@ -187,9 +205,17 @@ export function ManifestoOverlay({
             that will not only be unique,
             but will also last you a
             lifetime.
-          </p>
+          </motion.p>
 
-          <div
+          {/* BOTTOM INFORMATION */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.5,
+              ease: [0.76, 0, 0.24, 1],
+            }}
             className="
               mt-12
               grid
@@ -202,7 +228,14 @@ export function ManifestoOverlay({
               lg:gap-16
             "
           >
-            <div>
+            {/* WHY US */}
+            <motion.div
+              whileHover={{ x: 4 }}
+              transition={{
+                duration: 0.35,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+            >
               <div
                 className="
                   mb-3
@@ -211,7 +244,9 @@ export function ManifestoOverlay({
                   gap-3
                 "
               >
-                <span
+                <motion.span
+                  whileHover={{ scale: 1.5 }}
+                  transition={{ duration: 0.25 }}
                   className="
                     h-1.5
                     w-1.5
@@ -227,8 +262,7 @@ export function ManifestoOverlay({
                     tracking-[0.18em]
                   "
                   style={{
-                    fontFamily:
-                      FONT_DISPLAY,
+                    fontFamily: FONT_DISPLAY,
                   }}
                 >
                   WHY US
@@ -257,9 +291,16 @@ export function ManifestoOverlay({
                 a shared story from many
                 cupboards.
               </p>
-            </div>
+            </motion.div>
 
-            <div>
+            {/* OUR MISSION */}
+            <motion.div
+              whileHover={{ x: 4 }}
+              transition={{
+                duration: 0.35,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+            >
               <div
                 className="
                   mb-3
@@ -268,7 +309,9 @@ export function ManifestoOverlay({
                   gap-3
                 "
               >
-                <span
+                <motion.span
+                  whileHover={{ scale: 1.5 }}
+                  transition={{ duration: 0.25 }}
                   className="
                     h-1.5
                     w-1.5
@@ -284,8 +327,7 @@ export function ManifestoOverlay({
                     tracking-[0.18em]
                   "
                   style={{
-                    fontFamily:
-                      FONT_DISPLAY,
+                    fontFamily: FONT_DISPLAY,
                   }}
                 >
                   OUR MISSION
@@ -306,10 +348,10 @@ export function ManifestoOverlay({
                 make a difference the way
                 people see momentous.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }

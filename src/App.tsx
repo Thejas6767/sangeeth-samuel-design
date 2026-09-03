@@ -26,15 +26,17 @@ export function App() {
 
   // Initialize Lenis
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 0.8,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
-    });
+ const lenis = new Lenis({
+  duration: 1.35,
+  easing: (t) =>
+    1 - Math.pow(1 - t, 4),
+  orientation: 'vertical',
+  gestureOrientation: 'vertical',
+  smoothWheel: true,
+  wheelMultiplier: 0.85,
+  touchMultiplier: 1.2,
+  syncTouch: true,
+});
 
     (window as any).__lenis = lenis;
 
@@ -72,8 +74,8 @@ export function App() {
         ${FONT_IMPORT}
 
         html {
-          scroll-behavior: smooth;
-        }
+  scroll-behavior: auto;
+}
 
         * {
           box-sizing: border-box;

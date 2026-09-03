@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { C, FONT_BODY, FONT_DISPLAY, FONT_MONO } from '../shared/constants';
 import { MagneticButton } from '../shared/MagneticButton';
 import type { TrophyItem } from '../shared/types';
@@ -13,16 +14,23 @@ export function ArchiveModal({ project, onClose }: Props) {
   if (!project) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-8"
+<motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
+  className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-8"
       style={{ background: 'rgba(10,10,9,0.92)', backdropFilter: 'blur(18px)' }}
       onClick={() => {
         playSound('click');
         onClose();
       }}
     >
-      <div
-        className="relative max-w-4xl w-full bg-[#111110] border border-[#2d2d29] p-6 sm:p-10 overflow-y-auto max-h-[90vh] shadow-2xl rounded-sm"
+<motion.div
+  initial={{ opacity: 0, y: 24, scale: 0.98 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+  className="relative max-w-4xl w-full bg-[#111110] border border-[#2d2d29] p-6 sm:p-10 overflow-y-auto max-h-[90vh] shadow-2xl rounded-sm"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -113,7 +121,7 @@ export function ArchiveModal({ project, onClose }: Props) {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

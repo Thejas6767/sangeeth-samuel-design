@@ -26,17 +26,36 @@ export function ProcessOverlay({ scrollYProgress }: Props) {
       <motion.div style={{ y }} className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-5 lg:pr-8">
           <Eyebrow dark={false}>OUR METHODOLOGY</Eyebrow>
-          <h2 className="mt-5 text-[1.9rem] font-black leading-[0.97] tracking-[-0.04em] sm:text-[2.6rem] md:text-[3rem]" style={{ fontFamily: FONT_DISPLAY }}>
+          <motion.h2
+  initial={{ opacity: 0, y: 24 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{
+    duration: 0.9,
+    delay: 0.15,
+    ease,
+  }}
+  className="mt-5 text-[1.9rem] font-black leading-[0.97] tracking-[-0.04em] sm:text-[2.6rem] md:text-[3rem]"
+  style={{ fontFamily: FONT_DISPLAY }}
+>
             Grounded in respect.
             <br />
             Driven by service.
             <br />
             <span className="text-[#8C8C87]">Defined by courage.</span>
-          </h2>
-         <p className="mt-6 max-w-md text-[13.5px] leading-6 text-white/70 sm:text-[14px]" style={{ fontFamily: FONT_BODY }}>
-            We take a disciplined, research-driven approach to every bespoke commission, ensuring
+          </motion.h2>
+<motion.p
+  initial={{ opacity: 0, y: 18 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{
+    duration: 0.8,
+    delay: 0.35,
+    ease,
+  }}
+  className="mt-6 max-w-md text-[13.5px] leading-6 text-white/70 sm:text-[14px]"
+  style={{ fontFamily: FONT_BODY }}
+>            We take a disciplined, research-driven approach to every bespoke commission, ensuring
             that each silhouette embodies the spirit of the event and the weight of victory.
-          </p>
+          </motion.p>
         </div>
 
         <div className="lg:col-span-7">
