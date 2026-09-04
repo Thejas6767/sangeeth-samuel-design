@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Menu,
-  X,
-} from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import {
   AnimatePresence,
   motion,
@@ -20,26 +17,47 @@ import { playSound } from '../../utils/audioEngine';
 
 interface Props {
   menuOpen: boolean;
-  setMenuOpen: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
+  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ease =
-  [0.76, 0, 0.24, 1] as const;
+const ease = [0.76, 0, 0.24, 1] as const;
 
 export function Navbar({
   menuOpen,
   setMenuOpen,
 }: Props) {
-  const [scrolled, setScrolled] =
-    useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [lightSection, setLightSection] = useState(false);
 
   useEffect(() => {
-    const onScroll = () =>
-      setScrolled(
-        window.scrollY > 24,
-      );
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+
+      setScrolled(scrollY > 24);
+
+      const container =
+        document.getElementById('cinematic-container');
+
+      if (!container) {
+        setLightSection(false);
+        return;
+      }
+
+      const distance =
+        container.offsetHeight - window.innerHeight;
+
+      if (distance <= 0) {
+        setLightSection(false);
+        return;
+      }
+
+      const progress =
+        (scrollY - container.offsetTop) / distance;
+
+      setLightSection(progress >= 0.90);
+    };
+
+    onScroll();
 
     window.addEventListener(
       'scroll',
@@ -47,16 +65,25 @@ export function Navbar({
       { passive: true },
     );
 
-    return () =>
+    window.addEventListener(
+      'resize',
+      onScroll,
+    );
+
+    return () => {
       window.removeEventListener(
         'scroll',
         onScroll,
       );
+
+      window.removeEventListener(
+        'resize',
+        onScroll,
+      );
+    };
   }, []);
 
-  const scrollToProgress = (
-    progress: number,
-  ) => {
+  const scrollToProgress = (progress: number) => {
     const container =
       document.getElementById(
         'cinematic-container',
@@ -84,12 +111,9 @@ export function Navbar({
     ).__lenis;
 
     if (lenis) {
-      lenis.scrollTo(
-        target,
-        {
-          duration: 1.05,
-        },
-      );
+      lenis.scrollTo(target, {
+        duration: 1.05,
+      });
     } else {
       window.scrollTo({
         top: target,
@@ -102,6 +126,7 @@ export function Navbar({
     hidden: {
       opacity: 0,
     },
+
     show: {
       opacity: 1,
       transition: {
@@ -116,6 +141,7 @@ export function Navbar({
       y: -10,
       opacity: 0,
     },
+
     show: {
       y: 0,
       opacity: 1,
@@ -130,6 +156,7 @@ export function Navbar({
     hidden: {
       opacity: 0,
     },
+
     show: {
       opacity: 1,
       transition: {
@@ -137,6 +164,7 @@ export function Navbar({
         delayChildren: 0.08,
       },
     },
+
     exit: {
       opacity: 0,
       transition: {
@@ -150,6 +178,7 @@ export function Navbar({
       y: 24,
       opacity: 0,
     },
+
     show: {
       y: 0,
       opacity: 1,
@@ -158,6 +187,7 @@ export function Navbar({
         ease,
       },
     },
+
     exit: {
       y: 12,
       opacity: 0,
@@ -167,6 +197,34 @@ export function Navbar({
       },
     },
   };
+
+  const navbarClass = lightSection
+    ? `
+      border
+      border-black/10
+      bg-[#F2F1EC]/55
+      py-2.5
+      backdrop-blur-xl
+      rounded-2xl
+    `
+    : `
+      border
+      border-white/15
+      bg-white/[0.035]
+      py-2.5
+      backdrop-blur-xl
+      rounded-2xl
+    `;
+
+  const navTextClass = lightSection
+    ? `
+      text-black/60
+      hover:text-black
+    `
+    : `
+      text-white/65
+      hover:text-white
+    `;
 
   return (
     <>
@@ -190,32 +248,45 @@ export function Navbar({
           top-0
           z-50
           px-4
-          py-4
+          py-3
           sm:px-6
           md:px-10
           lg:px-12
         "
       >
-   <div
-  className={`
-    mx-auto
-    flex
-    max-w-[1440px]
-    items-center
-    justify-between
-    px-4
-    transition-all
-    duration-700
-    sm:px-5
-    ${
-      scrolled && !menuOpen
-     ? 'border border-white/15 bg-[#0A0A09]/85 py-3 backdrop-blur-xl rounded-2xl'
-        : 'py-2'
-    }
-  `}
->
-          {/* LOGO */}
+        <motion.div
+          animate={{
+            backgroundColor: lightSection
+              ? 'rgba(242, 241, 236, 0.55)'
+              : 'rgba(255, 255, 255, 0.035)',
 
+            borderColor: lightSection
+              ? 'rgba(0, 0, 0, 0.10)'
+              : 'rgba(255, 255, 255, 0.15)',
+          }}
+          transition={{
+            duration: 0.6,
+            ease,
+          }}
+          className={`
+            mx-auto
+            flex
+            max-w-[1440px]
+            items-center
+            justify-between
+            px-3
+            transition-all
+            duration-700
+            sm:px-4
+
+            ${
+              scrolled && !menuOpen
+                ? navbarClass
+                : 'py-2'
+            }
+          `}
+        >
+          {/* LOGO */}
           <button
             type="button"
             onClick={() => {
@@ -234,28 +305,37 @@ export function Navbar({
             "
             aria-label="Sangeeth Samuel Design Home"
           >
-   <img
-  src={logoImg}
-  alt="Sangeeth Samuel Design"
-  className="
-    h-14
-    w-auto
-    object-contain
-    scale-[1.6]
-    origin-left
-    opacity-100
-    transition-transform
-    duration-500
-    group-hover:scale-[1.65]
-    sm:h-16
-    md:h-[68px]
-    lg:h-[72px]
-  "
-/>
+            <motion.img
+              src={logoImg}
+              alt="Sangeeth Samuel Design"
+              animate={{
+                filter: lightSection
+                  ? 'brightness(0) saturate(100%)'
+                  : 'brightness(1) saturate(100%)',
+              }}
+              transition={{
+                duration: 0.5,
+                ease,
+              }}
+              className="
+                h-12
+                w-auto
+                scale-[1.35]
+                origin-left
+                object-contain
+                opacity-95
+                transition-opacity
+                duration-500
+                group-hover:opacity-100
+                sm:h-14
+                sm:scale-[1.35]
+                md:h-16
+                md:scale-[1.35]
+              "
+            />
           </button>
 
           {/* DESKTOP NAVIGATION */}
-
           <motion.nav
             variants={desktopVariants}
             initial="hidden"
@@ -263,99 +343,95 @@ export function Navbar({
             className="
               hidden
               items-center
-              gap-7
+              gap-8
               md:flex
-              lg:gap-9
-              xl:gap-10
+              lg:gap-10
             "
           >
-            {NAV_LINKS.map(
-              (link) => (
-                <motion.button
-                  key={link.label}
-                  variants={itemVariants}
-                  type="button"
-                  onClick={() => {
-                    playSound(
-                      'click',
-                    );
+            {NAV_LINKS.map((link) => (
+              <motion.button
+                key={link.label}
+                variants={itemVariants}
+                type="button"
+                onClick={() => {
+                  playSound('click');
+                  scrollToProgress(
+                    link.progress,
+                  );
+                }}
+                className={`
+                  group
+                  relative
+                  py-2
+                  font-mono
+                  text-[9px]
+                  tracking-[0.2em]
+                  transition-colors
+                  duration-500
+                  focus-premium
+                  ${navTextClass}
+                `}
+                style={{
+                  fontFamily: FONT_MONO,
+                }}
+              >
+                {link.label}
 
-                    scrollToProgress(
-                      link.progress,
-                    );
-                  }}
-                  className="
-                    group
-                    relative
-                    py-3
-                    font-mono
-                    text-[11px]
-                    font-medium
-                    tracking-[0.16em]
-                    text-white/90
-                    transition-colors
-                    duration-300
-                    hover:text-white
-                    focus-premium
-                  "
-                  style={{
-                    fontFamily:
-                      FONT_MONO,
-                  }}
-                >
-                  {link.label}
-<span
-  className="
-    absolute
-    bottom-0
-    left-1/2
-    h-px
-    w-0
-    -translate-x-1/2
-    bg-white
-    transition-all
-    duration-500
-    ease-out
-    group-hover:w-full
-  "
-/>
-                </motion.button>
-              ),
-            )}
+                <motion.span
+                  className={`
+                    absolute
+                    bottom-0
+                    left-0
+                    h-px
+                    w-0
+                    transition-all
+                    duration-500
+                    group-hover:w-full
+
+                    ${
+                      lightSection
+                        ? 'bg-black'
+                        : 'bg-white'
+                    }
+                  `}
+                />
+              </motion.button>
+            ))}
           </motion.nav>
 
           {/* MOBILE MENU BUTTON */}
-
-          <button
+          <motion.button
             type="button"
-           className="
-  flex
-  h-12
-  w-12
-  items-center
-  justify-center
-  border
-  border-white/20
-  bg-[#0A0A09]/40
-  text-white
-  transition-all
-  duration-300
-  hover:border-white/50
-  hover:bg-white/10
-  active:scale-95
-  focus-premium
-  md:hidden
-"
+            animate={{
+              color: lightSection
+                ? '#0A0A09'
+                : '#F2F1EC',
+
+              borderColor: lightSection
+                ? 'rgba(0, 0, 0, 0.12)'
+                : 'rgba(255, 255, 255, 0.10)',
+            }}
+            transition={{
+              duration: 0.5,
+              ease,
+            }}
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              border
+              md:hidden
+              focus-premium
+            "
             aria-label={
               menuOpen
                 ? 'Close navigation menu'
                 : 'Open navigation menu'
             }
             onClick={() => {
-              playSound(
-                'click',
-              );
-
+              playSound('click');
               setMenuOpen(
                 (v) => !v,
               );
@@ -363,21 +439,20 @@ export function Navbar({
           >
             {menuOpen ? (
               <X
-                size={21}
-                strokeWidth={1.8}
+                size={19}
+                strokeWidth={1.2}
               />
             ) : (
               <Menu
-                size={21}
-                strokeWidth={1.8}
+                size={19}
+                strokeWidth={1.2}
               />
             )}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </motion.header>
 
-      {/* MOBILE MENU */}
-
+      {/* MOBILE FULLSCREEN MENU */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -407,9 +482,7 @@ export function Navbar({
             "
           >
             <motion.nav
-              variants={
-                mobileVariants
-              }
+              variants={mobileVariants}
               initial="hidden"
               animate="show"
               exit="exit"
@@ -422,61 +495,44 @@ export function Navbar({
                 gap-4
               "
             >
-              {NAV_LINKS.map(
-                (link) => (
-                  <motion.button
-                    key={link.label}
-                    variants={
-                      mobileItemVariants
-                    }
-                    type="button"
-                    onClick={() => {
-                      playSound(
-                        'click',
-                      );
+              {NAV_LINKS.map((link) => (
+                <motion.button
+                  key={link.label}
+                  variants={mobileItemVariants}
+                  type="button"
+                  onClick={() => {
+                    playSound('click');
+                    setMenuOpen(false);
 
-                      setMenuOpen(
-                        false,
-                      );
-
-                      setTimeout(
-                        () =>
-                          scrollToProgress(
-                            link.progress,
-                          ),
-                        250,
-                      );
-                    }}
-                className="
-  group
-  border-b
-  border-white/10
-  py-4
-  text-left
-  text-[2.5rem]
-  font-black
-  leading-none
-  tracking-[-0.04em]
-  text-white
-  transition-all
-  duration-300
-  hover:pl-2
-  hover:border-white/40
-  focus-premium
-  sm:text-[3.5rem]
-"
-                    style={{
-                      fontFamily:
-                        FONT_DISPLAY,
-                    }}
-                  >
-                    {link.label}
-                  </motion.button>
-                ),
-              )}
+                    setTimeout(
+                      () =>
+                        scrollToProgress(
+                          link.progress,
+                        ),
+                      250,
+                    );
+                  }}
+                  className="
+                    border-b
+                    border-white/10
+                    py-4
+                    text-left
+                    text-[2.5rem]
+                    font-black
+                    leading-none
+                    tracking-[-0.04em]
+                    text-white
+                    focus-premium
+                    sm:text-[3.5rem]
+                  "
+                  style={{
+                    fontFamily: FONT_DISPLAY,
+                  }}
+                >
+                  {link.label}
+                </motion.button>
+              ))}
             </motion.nav>
-
-            {/* SOCIAL LINKS */}
 
             <div
               className="
@@ -492,21 +548,17 @@ export function Navbar({
                 sm:left-14
               "
               style={{
-                fontFamily:
-                  FONT_MONO,
+                fontFamily: FONT_MONO,
               }}
             >
               <a
                 href="https://www.instagram.com/the6t9th/"
                 target="_blank"
                 rel="noreferrer"
-              className="
-  inline-block
-  transition-all
-  duration-300
-  hover:translate-x-1
-  hover:text-white
-"
+                className="
+                  transition-colors
+                  hover:text-white
+                "
               >
                 INSTAGRAM
               </a>
@@ -516,12 +568,9 @@ export function Navbar({
                 target="_blank"
                 rel="noreferrer"
                 className="
-  inline-block
-  transition-all
-  duration-300
-  hover:translate-x-1
-  hover:text-white
-"
+                  transition-colors
+                  hover:text-white
+                "
               >
                 FACEBOOK
               </a>

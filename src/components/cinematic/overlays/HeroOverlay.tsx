@@ -87,23 +87,8 @@ export function HeroOverlay({ scrollYProgress }: Props) {
           sm:text-[9px]
         "
       >
-        <span className="flex items-center gap-2.5">
-          <span className="h-1 w-1 rounded-full bg-white/80" />
-          ATELIER MONUMENT
-        </span>
-
-        <motion.span
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{
-    duration: 0.7,
-    delay: 0.45,
-    ease: [0.76, 0, 0.24, 1],
-  }}
-  className="hidden sm:inline"
->
-  BANGALORE · INDIA / GLOBAL
-</motion.span>
+        
+  
       </div>
 
       {/* MAIN CONTENT */}
@@ -177,29 +162,7 @@ export function HeroOverlay({ scrollYProgress }: Props) {
   }}
   className="mt-8 flex items-end gap-4 sm:mt-10"
 >
-          <motion.div
-  whileHover={{ scale: 1.08, rotate: 1 }}
-  whileTap={{ scale: 0.96 }}
-  transition={{ duration: 0.3, ease: [0.76, 0, 0.24, 1] }}
-  className="
-    flex
-    h-9
-    w-9
-              shrink-0
-              items-center
-              justify-center
-              border
-              border-white/25
-              font-mono
-              text-[9px]
-              tracking-[0.2em]
-              text-white/80
-              sm:h-10
-              sm:w-10
-            "
-          >
-            SS
-          </motion.div>
+       
 
           <div className="pb-0.5">
             <div className="font-mono text-[8px] tracking-[0.22em] text-white/35">
@@ -221,6 +184,7 @@ export function HeroOverlay({ scrollYProgress }: Props) {
             </div>
           </div>
         </motion.div>
+  
       </motion.div>
 
       {/* BOTTOM BAR */}
@@ -235,6 +199,19 @@ export function HeroOverlay({ scrollYProgress }: Props) {
           "
         >
           SANGEETH SAMUEL DESIGN ©{new Date().getFullYear()}
+
+                      <motion.span
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{
+    duration: 0.7,
+    delay: 0.45,
+    ease: [0.76, 0, 0.24, 1],
+  }}
+  className="hidden sm:inline"
+>
+  BANGALORE · INDIA / GLOBAL
+</motion.span>
         </div>
 
         <motion.div
