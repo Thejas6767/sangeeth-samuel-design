@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import Lenis from 'lenis';
+import { AtelierSections } from './components/sections/AtelierSections';
 import { AnimatePresence } from 'framer-motion';
 import { CinematicScroll } from './components/cinematic/CinematicScroll';
 import { Navbar } from './components/layout/Navbar';
@@ -119,13 +120,15 @@ export function App() {
       />
 
       <main id="main-content">
-        <CinematicScroll
-          onLoadProgress={handleLoadProgress}
-          onLoaded={handleLoaded}
-        />
-      </main>
+  <CinematicScroll
+    onLoadProgress={handleLoadProgress}
+    onLoaded={handleLoaded}
+  />
 
-      <Footer />
+  <AtelierSections />
+</main>
+
+<Footer />
     </div>
   );
 }

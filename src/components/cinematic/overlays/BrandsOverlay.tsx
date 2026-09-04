@@ -1,16 +1,10 @@
-import {
-  motion,
-  type MotionValue,
-  useTransform,
-} from 'framer-motion';
-
+import { motion, type MotionValue, useTransform } from 'framer-motion';
 import {
   FONT_BODY,
   FONT_DISPLAY,
   FONT_MONO,
   SCROLL_TIMELINE,
 } from '../../shared/constants';
-
 import { BRAND_PARTNERS } from '../../shared/types';
 import { Eyebrow } from '../../shared/Eyebrow';
 import { ChapterMark } from '../../shared/ChapterMark';
@@ -18,12 +12,6 @@ import { ChapterMark } from '../../shared/ChapterMark';
 interface Props {
   scrollYProgress: MotionValue<number>;
 }
-
-/*
-|--------------------------------------------------------------------------
-| Partner marquee
-|--------------------------------------------------------------------------
-*/
 
 function MarqueeRow({
   items,
@@ -34,59 +22,18 @@ function MarqueeRow({
   direction?: 'left' | 'right';
   duration?: number;
 }) {
-  const loop = [
-    ...items,
-    ...items,
-    ...items,
-    ...items,
-  ];
+  const loop = [...items, ...items, ...items, ...items];
 
   return (
-    <div
-      className="
-        relative
-        overflow-hidden
-        py-4
-        sm:py-5
-      "
-    >
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-y-0
-          left-0
-          z-10
-          w-16
-          bg-gradient-to-r
-          from-[#0A0A09]
-          to-transparent
-          sm:w-28
-        "
-      />
+    <div className="relative w-screen overflow-hidden py-4 sm:py-5">
+      {/* Left fade */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black/60 to-transparent sm:w-28" />
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-y-0
-          right-0
-          z-10
-          w-16
-          bg-gradient-to-l
-          from-[#0A0A09]
-          to-transparent
-          sm:w-28
-        "
-      />
+      {/* Right fade */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black/60 to-transparent sm:w-28" />
 
       <motion.div
-        className="
-          flex
-          w-max
-          shrink-0
-          items-center
-        "
+        className="flex w-max shrink-0 items-center"
         animate={{
           x:
             direction === 'left'
@@ -102,133 +49,110 @@ function MarqueeRow({
           },
         }}
       >
-        {loop.map(
-          (brand, index) => (
-            <div
-              key={`${brand.name}-${index}`}
-              className="
-                flex
-                items-center
-              "
-            >
+        {loop.map((brand, i) => (
+          <div
+            key={`${brand.name}-${i}`}
+            className="flex items-center"
+          >
+            <div className="group px-7 sm:px-12 md:px-16">
               <div
                 className="
-                  group
-                  px-7
-                  sm:px-12
-                  md:px-16
+                  whitespace-nowrap
+                  text-[15px]
+                  font-black
+                  tracking-[0.04em]
+                  text-white/60
+                  transition-colors
+                  duration-500
+                  group-hover:text-white
+                  sm:text-[18px]
+                  md:text-[21px]
                 "
+                style={{
+                  fontFamily: FONT_DISPLAY,
+                }}
               >
-                <div
-                  className="
-                    whitespace-nowrap
-                    text-[15px]
-                    font-black
-                    tracking-[0.04em]
-                    text-[#F2F1EC]
-                    transition-colors
-                    duration-500
-                    group-hover:text-white
-                    sm:text-[18px]
-                    md:text-[21px]
-                  "
-                  style={{
-                    fontFamily:
-                      FONT_DISPLAY,
-                  }}
-                >
-                  {brand.name}
-                </div>
-
-                <div
-                  className="
-                    mt-1
-                    whitespace-nowrap
-                    text-[8px]
-                    uppercase
-                    tracking-[0.2em]
-                    text-[#8C8C87]
-                    transition-colors
-                    duration-500
-                    group-hover:text-[#F2F1EC]
-                  "
-                  style={{
-                    fontFamily:
-                      FONT_MONO,
-                  }}
-                >
-                  {brand.label}
-                </div>
+                {brand.name}
               </div>
 
-              <span
+              <div
                 className="
-                  h-px
-                  w-7
-                  bg-[#8C8C87]/30
-                  sm:w-12
+                  mt-1
+                  whitespace-nowrap
+                  text-[8px]
+                  uppercase
+                  tracking-[0.2em]
+                  text-white/30
+                  transition-colors
+                  duration-500
+                  group-hover:text-white/55
                 "
-              />
+                style={{
+                  fontFamily: FONT_MONO,
+                }}
+              >
+                {brand.label}
+              </div>
             </div>
-          ),
-        )}
+
+            <span
+              className="
+                h-px
+                w-7
+                bg-white/10
+                sm:w-12
+              "
+            />
+          </div>
+        ))}
       </motion.div>
     </div>
   );
 }
-
-/*
-|--------------------------------------------------------------------------
-| Partners overlay
-|--------------------------------------------------------------------------
-*/
 
 export function BrandsOverlay({
   scrollYProgress,
 }: Props) {
   const {
     start,
+    mid,
     end,
   } = SCROLL_TIMELINE.BRANDS;
 
-  /*
-   * Only opacity changes.
-   *
-   * No vertical movement.
-   */
-  const opacity =
-    useTransform(
-      scrollYProgress,
-      [
-        start,
-        start + 0.015,
-        start + 0.04,
-        end - 0.04,
-        end - 0.015,
-        end,
-      ],
-      [0, 1, 1, 1, 1, 0],
-    );
+  const opacity = useTransform(
+    scrollYProgress,
+    [
+      start,
+      start + 0.02,
+      mid,
+      end - 0.02,
+      end,
+    ],
+    [0, 1, 1, 1, 0],
+  );
 
-  const pointerEvents =
-    useTransform(
-      scrollYProgress,
-      (p) =>
-        p >= start &&
-        p < end
-          ? 'auto'
-          : 'none',
-    );
+  const y = useTransform(
+    scrollYProgress,
+    [start, mid, end],
+    [24, 0, -24],
+  );
 
-  const display =
-    useTransform(
-      scrollYProgress,
-      (p) =>
-        p >= start &&
-        p < end
-          ? 'flex'
-          : 'none',
-    );
+  const pointerEvents = useTransform(
+    scrollYProgress,
+    (p) =>
+      p >= start && p <= end
+        ? 'auto'
+        : 'none',
+  );
+
+  const display = useTransform(
+    scrollYProgress,
+    (p) =>
+      p >= start - 0.015 &&
+      p <= end + 0.015
+        ? 'flex'
+        : 'none',
+  );
 
   return (
     <motion.div
@@ -267,7 +191,8 @@ export function BrandsOverlay({
         "
       />
 
-      <div
+      <motion.div
+        style={{ y }}
         className="
           mx-auto
           flex
@@ -277,26 +202,13 @@ export function BrandsOverlay({
           justify-center
         "
       >
-        <div
-          className="
-            mb-9
-            max-w-2xl
-            sm:mb-12
-          "
-        >
+        <div className="mb-9 max-w-2xl sm:mb-12">
           <Eyebrow dark>
             COMMISSIONED BY CHAMPIONSHIPS
           </Eyebrow>
 
-          <motion.h2
-  initial={{ opacity: 0, y: 24 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{
-    duration: 0.9,
-    delay: 0.2,
-    ease: [0.76, 0, 0.24, 1],
-  }}
-  className="
+          <h2
+            className="
               mt-4
               max-w-3xl
               text-[1.65rem]
@@ -308,23 +220,15 @@ export function BrandsOverlay({
               md:text-[2.7rem]
             "
             style={{
-              fontFamily:
-                FONT_DISPLAY,
+              fontFamily: FONT_DISPLAY,
             }}
           >
-            Built for national rallies
-            and motorsport championships.
-          </motion.h2>
+            Built for national rallies and
+            motorsport championships.
+          </h2>
 
-        <motion.p
-  initial={{ opacity: 0, y: 18 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{
-    duration: 0.8,
-    delay: 0.4,
-    ease: [0.76, 0, 0.24, 1],
-  }}
-  className="
+          <p
+            className="
               mt-4
               max-w-lg
               text-[13px]
@@ -337,17 +241,22 @@ export function BrandsOverlay({
             }}
           >
             From the Indian National Rally
-            Championship to premier clubs
-            under FMSCI, 6t9th crafts
-            one-of-a-kind trophies for
-            moments that become legacy.
-          </motion.p>
+            Championship to premier clubs under
+            FMSCI, 6t9th crafts one-of-a-kind
+            trophies for moments that become
+            legacy.
+          </p>
         </div>
 
+        {/* FULL-WIDTH PARTNER MARQUEE */}
         <div
           className="
+            relative
+            left-1/2
+            w-screen
+            -translate-x-1/2
             border-y
-            border-[#8C8C87]/30
+            border-white/10
             bg-transparent
           "
         >
@@ -403,7 +312,7 @@ export function BrandsOverlay({
             EST. 2020
           </span>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
