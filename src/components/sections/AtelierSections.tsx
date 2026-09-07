@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
-  ArrowRight,
 } from 'lucide-react';
 
 const craftsmanship = [
@@ -66,18 +65,23 @@ const testimonials = [
   },
 ];
 
+/* =========================================================
+   CINEMATIC ANIMATION
+========================================================= */
+
 export function AtelierSections() {
   return (
     <div className="relative bg-[#0A0A09] text-[#F2F1EC]">
 
       {/* =========================================================
-          CRAFTSMANSHIP
+          CRAFTSMANSHIP / THE MAKING
       ========================================================= */}
 
       <section
         id="craft"
         className="
           relative
+          overflow-hidden
           border-t
           border-white/[0.08]
           px-6
@@ -88,14 +92,86 @@ export function AtelierSections() {
           lg:px-16
         "
       >
-        <div className="mx-auto max-w-[1440px]">
+
+        {/* Cinematic background zoom */}
+
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
+          <motion.img
+            src="/atelier/philosophy.jpg"
+            alt=""
+            initial={{ scale: 1.08 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 2,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              absolute
+              inset-0
+              h-full
+              w-full
+              object-cover
+              opacity-[0.55]
+              grayscale
+            "
+          />
+
+          <div className="
+            absolute
+            inset-0
+            bg-[#0A0A09]/50
+          " />
+
+          <div className="
+            absolute
+            inset-0
+            bg-gradient-to-b
+            from-[#0A0A09]/90
+            via-transparent
+            to-[#0A0A09]
+          " />
+
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[1440px]">
 
           {/* Header */}
 
           <div className="flex items-end justify-between gap-8">
+
             <div>
-              <div className="mb-5 flex items-center gap-3">
-                <span className="h-px w-8 bg-white/40" />
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  x: -30,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  x: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.25,
+                }}
+                transition={{
+                  duration: 0.8,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="mb-5 flex items-center gap-3"
+              >
+                <motion.span
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 32 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.7,
+                    delay: 0.15,
+                  }}
+                  className="h-px bg-white/40"
+                />
 
                 <span
                   className="
@@ -107,31 +183,62 @@ export function AtelierSections() {
                 >
                   THE MAKING
                 </span>
-              </div>
-
-              <h2
+              </motion.div>
+<motion.h2
+  initial={{
+    opacity: 0,
+    y: 60,
+    scale: 0.98,
+  }}
+  whileInView={{
+    opacity: 1,
+    y: 0,
+    scale: 1,
+  }}
+  viewport={{
+    once: true,
+    amount: 0.25,
+  }}
+  transition={{
+    duration: 1,
+    ease: [0.16, 1, 0.3, 1],
+  }}
   className="
-    max-w-5xl
+    max-w-4xl
     text-[2.8rem]
     font-black
     leading-[0.88]
-    tracking-[0.02em]
+    tracking-[-0.05em]
     sm:text-[4rem]
     md:text-[5.5rem]
   "
-                style={{
-                  fontFamily: "'Archivo', sans-serif",
-                }}
-              >
+  style={{
+    fontFamily: "'Archivo', sans-serif",
+  }}
+>
                 CRAFTED
                 <br />
                 TO OUTLIVE
                 <br />
                 THE MOMENT.
-              </h2>
+              </motion.h2>
+
             </div>
 
-            <div
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              whileInView={{
+                opacity: 1,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                duration: 1,
+                delay: 0.5,
+              }}
               className="
                 hidden
                 pb-2
@@ -143,12 +250,42 @@ export function AtelierSections() {
               "
             >
               01 / CRAFT
-            </div>
+            </motion.div>
+
           </div>
 
           {/* Intro */}
 
-          <div className="mt-16 grid gap-10 border-t border-white/[0.08] pt-8 md:grid-cols-[0.8fr_1.2fr] md:mt-24">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 40,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            transition={{
+              duration: 0.9,
+              delay: 0.15,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              mt-16
+              grid
+              gap-10
+              border-t
+              border-white/[0.08]
+              pt-8
+              md:mt-24
+              md:grid-cols-[0.8fr_1.2fr]
+            "
+          >
+
             <div>
               <span
                 className="
@@ -179,29 +316,43 @@ export function AtelierSections() {
               a catalogue product. Every proportion, material and surface
               is considered around the significance of the achievement.
             </p>
-          </div>
+
+          </motion.div>
 
           {/* Craft cards */}
 
           <div className="mt-16 grid border-l border-white/[0.08] md:grid-cols-4">
+
             {craftsmanship.map((item, index) => (
+
               <motion.div
                 key={item.number}
                 initial={{
                   opacity: 0,
-                  y: 25,
+                  y: 70,
+                  rotateX: 8,
+                  scale: 0.97,
                 }}
                 whileInView={{
                   opacity: 1,
                   y: 0,
+                  rotateX: 0,
+                  scale: 1,
                 }}
                 viewport={{
                   once: true,
-                  amount: 0.25,
+                  amount: 0.2,
                 }}
                 transition={{
-                  duration: 0.7,
-                  delay: index * 0.08,
+                  duration: 0.9,
+                  delay: index * 0.14,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                whileHover={{
+                  y: -8,
+                  transition: {
+                    duration: 0.35,
+                  },
                 }}
                 className="
                   group
@@ -217,7 +368,9 @@ export function AtelierSections() {
                   md:min-h-[330px]
                 "
               >
+
                 <div className="flex items-center justify-between">
+
                   <span
                     className="
                       font-mono
@@ -241,9 +394,11 @@ export function AtelierSections() {
                       group-hover:text-white/70
                     "
                   />
+
                 </div>
 
                 <div className="mt-24 md:mt-32">
+
                   <h3
                     className="
                       text-[1.15rem]
@@ -257,6 +412,17 @@ export function AtelierSections() {
                   >
                     {item.title}
                   </h3>
+
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: 0 }}
+                    whileHover={{ width: 48 }}
+                    className="
+                      mt-3
+                      h-px
+                      bg-white/50
+                    "
+                  />
 
                   <p
                     className="
@@ -273,13 +439,19 @@ export function AtelierSections() {
                   >
                     {item.text}
                   </p>
+
                 </div>
+
               </motion.div>
+
             ))}
+
           </div>
 
         </div>
+
       </section>
+
 
       {/* =========================================================
           SELECTED WORK
@@ -289,6 +461,7 @@ export function AtelierSections() {
         id="selected-work"
         className="
           relative
+          overflow-hidden
           border-t
           border-white/[0.08]
           px-6
@@ -299,12 +472,82 @@ export function AtelierSections() {
           lg:px-16
         "
       >
-        <div className="mx-auto max-w-[1440px]">
+
+        {/* Cinematic background */}
+
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
+          <motion.img
+            src="/atelier/selected-work.jpg"
+            alt=""
+            initial={{ scale: 1.1 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 2.2,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              absolute
+              inset-0
+              h-full
+              w-full
+              object-cover
+              opacity-[0.55]
+              grayscale
+            "
+          />
+
+          <div className="
+            absolute
+            inset-0
+            bg-[#0A0A09]/50
+          " />
+
+          <div className="
+            absolute
+            inset-0
+            bg-gradient-to-b
+            from-[#0A0A09]/90
+            via-transparent
+            to-[#0A0A09]
+          " />
+
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[1440px]">
 
           <div className="flex items-end justify-between">
+
             <div>
-              <div className="mb-5 flex items-center gap-3">
-                <span className="h-px w-8 bg-white/40" />
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  x: -30,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  x: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 0.8,
+                }}
+                className="mb-5 flex items-center gap-3"
+              >
+
+                <motion.span
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 32 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.7,
+                  }}
+                  className="h-px bg-white/40"
+                />
 
                 <span
                   className="
@@ -316,31 +559,64 @@ export function AtelierSections() {
                 >
                   SELECTED WORK
                 </span>
-              </div>
 
-              <h2
-                className="
-                  text-[2.8rem]
-                  font-black
-                  leading-[0.88]
-                  tracking-[-0.05em]
-                  sm:text-[4rem]
-                  md:text-[5.5rem]
-                "
-                style={{
-                  fontFamily:
-                    "'Archivo', sans-serif",
-                }}
-              >
+              </motion.div>
+
+            <motion.h2
+  initial={{
+    opacity: 0,
+    y: 60,
+    scale: 0.98,
+  }}
+  whileInView={{
+    opacity: 1,
+    y: 0,
+    scale: 1,
+  }}
+  viewport={{
+    once: true,
+    amount: 0.25,
+  }}
+  transition={{
+    duration: 1,
+    ease: [0.16, 1, 0.3, 1],
+  }}
+  className="
+    max-w-4xl
+    text-[2.8rem]
+    font-black
+    leading-[0.88]
+    tracking-[-0.05em]
+    sm:text-[4rem]
+    md:text-[5.5rem]
+  "
+  style={{
+    fontFamily: "'Archivo', sans-serif",
+  }}
+>
                 OBJECTS
                 <br />
                 WITH
                 <br />
                 PRESENCE.
-              </h2>
+              </motion.h2>
+
             </div>
 
-            <span
+            <motion.span
+              initial={{
+                opacity: 0,
+              }}
+              whileInView={{
+                opacity: 1,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                duration: 1,
+                delay: 0.5,
+              }}
               className="
                 hidden
                 pb-2
@@ -352,7 +628,8 @@ export function AtelierSections() {
               "
             >
               02 / WORK
-            </span>
+            </motion.span>
+
           </div>
 
           {/* Work list */}
@@ -360,24 +637,29 @@ export function AtelierSections() {
           <div className="mt-20 border-t border-white/[0.08]">
 
             {selectedWork.map((work, index) => (
+
               <motion.div
                 key={work.number}
-                initial={{
-                  opacity: 0,
-                  x: -20,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  x: 0,
-                }}
-                viewport={{
-                  once: true,
-                  amount: 0.3,
-                }}
-                transition={{
-                  duration: 0.65,
-                  delay: index * 0.08,
-                }}
+      initial={{
+  opacity: 0,
+  filter: "blur(6px)",
+}}
+
+whileInView={{
+  opacity: 1,
+  filter: "blur(0px)",
+}}
+
+viewport={{
+  once: true,
+  amount: 0.2,
+}}
+
+transition={{
+  duration: 0.8,
+  delay: index * 0.12,
+  ease: "easeOut",
+}}
                 className="
                   group
                   relative
@@ -391,13 +673,25 @@ export function AtelierSections() {
                   py-8
                   transition-all
                   duration-500
-                  hover:px-4
                   md:min-h-[190px]
                 "
               >
+
                 <div className="flex items-center gap-7 md:gap-12">
 
-                  <span
+                  <motion.span
+                    initial={{
+                      opacity: 0,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      delay: index * 0.15 + 0.35,
+                    }}
                     className="
                       font-mono
                       text-[8px]
@@ -406,9 +700,10 @@ export function AtelierSections() {
                     "
                   >
                     {work.number}
-                  </span>
+                  </motion.span>
 
                   <div>
+
                     <div
                       className="
                         mb-2
@@ -420,23 +715,21 @@ export function AtelierSections() {
                     >
                       {work.category}
                     </div>
-
-                    <h3
-                      className="
-                        text-[2rem]
-                        font-black
-                        leading-none
-                        tracking-[-0.04em]
-                        sm:text-[3rem]
-                        md:text-[4.5rem]
-                      "
-                      style={{
-                        fontFamily:
-                          "'Archivo', sans-serif",
-                      }}
-                    >
-                      {work.title}
-                    </h3>
+<h3
+  className="
+    text-[2rem]
+    font-black
+    leading-none
+    tracking-[-0.04em]
+    sm:text-[3rem]
+    md:text-[4.5rem]
+  "
+  style={{
+    fontFamily: "'Archivo', sans-serif",
+  }}
+>
+  {work.title}
+</h3>
 
                     <div
                       className="
@@ -449,45 +742,65 @@ export function AtelierSections() {
                     >
                       {work.subtitle}
                     </div>
+
                   </div>
 
                 </div>
 
-                <div
+                <motion.div
+                  whileHover={{
+                    scale: 1.25,
+                    rotate: 90,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
                   className="
                     hidden
-                    h-11
-                    w-11
-                    shrink-0
-                    items-center
-                    justify-center
+                    h-2
+                    w-2
                     rounded-full
-                    border
-                    border-white/15
-                    transition-all
-                    duration-500
-                    group-hover:border-white/50
-                    md:flex
+                    bg-white/30
+                    md:block
                   "
-                >
-                  <ArrowRight
-                    size={16}
-                    strokeWidth={1}
-                    className="
-                      transition-transform
-                      duration-500
-                      group-hover:translate-x-1
-                    "
-                  />
-                </div>
+                />
+
               </motion.div>
+
             ))}
 
           </div>
 
           {/* Bottom statement */}
 
-          <div className="mt-12 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 25,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            transition={{
+              duration: 0.8,
+              delay: 0.2,
+            }}
+            className="
+              mt-12
+              flex
+              flex-col
+              justify-between
+              gap-5
+              md:flex-row
+              md:items-center
+            "
+          >
+
             <span
               className="
                 font-mono
@@ -511,19 +824,23 @@ export function AtelierSections() {
               Every commission is developed around its own story,
               identity and significance.
             </span>
-          </div>
+
+          </motion.div>
 
         </div>
+
       </section>
 
+
       {/* =========================================================
-          CLIENT WORDS
+          CLIENT WORDS / PHILOSOPHY
       ========================================================= */}
 
       <section
         id="words"
         className="
           relative
+          overflow-hidden
           border-t
           border-white/[0.08]
           px-6
@@ -534,12 +851,82 @@ export function AtelierSections() {
           lg:px-16
         "
       >
-        <div className="mx-auto max-w-[1440px]">
+
+        {/* Cinematic background */}
+
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
+          <motion.img
+            src="/atelier/craftsmanship.jpg"
+            alt=""
+            initial={{ scale: 1.1 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 2.4,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              absolute
+              inset-0
+              h-full
+              w-full
+              object-cover
+              opacity-[0.55]
+              grayscale
+            "
+          />
+
+          <div className="
+            absolute
+            inset-0
+            bg-[#0A0A09]/55
+          " />
+
+          <div className="
+            absolute
+            inset-0
+            bg-gradient-to-b
+            from-[#0A0A09]/90
+            via-transparent
+            to-[#0A0A09]
+          " />
+
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[1440px]">
 
           <div className="flex items-end justify-between">
+
             <div>
-              <div className="mb-5 flex items-center gap-3">
-                <span className="h-px w-8 bg-white/40" />
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  
+                }}
+                whileInView={{
+                  opacity: 1,
+                 
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 0.8,
+                }}
+                className="mb-5 flex items-center gap-3"
+              >
+
+                <motion.span
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 32 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.7,
+                  }}
+                  className="h-px bg-white/40"
+                />
 
                 <span
                   className="
@@ -551,23 +938,40 @@ export function AtelierSections() {
                 >
                   THE PHILOSOPHY
                 </span>
-              </div>
 
-              <h2
-                className="
-                  max-w-4xl
-                  text-[2.8rem]
-                  font-black
-                  leading-[0.88]
-                  tracking-[-0.05em]
-                  sm:text-[4rem]
-                  md:text-[5.5rem]
-                "
-                style={{
-                  fontFamily:
-                    "'Archivo', sans-serif",
-                }}
-              >
+              </motion.div>
+<motion.h2
+  initial={{
+    opacity: 0,
+    y: 60,
+    scale: 0.98,
+  }}
+  whileInView={{
+    opacity: 1,
+    y: 0,
+    scale: 1,
+  }}
+  viewport={{
+    once: true,
+    amount: 0.25,
+  }}
+  transition={{
+    duration: 1,
+    ease: [0.16, 1, 0.3, 1],
+  }}
+  className="
+    max-w-4xl
+    text-[2.8rem]
+    font-black
+    leading-[0.88]
+    tracking-[-0.05em]
+    sm:text-[4rem]
+    md:text-[5.5rem]
+  "
+  style={{
+    fontFamily: "'Archivo', sans-serif",
+  }}
+>
                 THE OBJECT
                 <br />
                 SHOULD
@@ -575,10 +979,24 @@ export function AtelierSections() {
                 <span className="text-white/30">
                   MATTER.
                 </span>
-              </h2>
+              </motion.h2>
+
             </div>
 
-            <span
+            <motion.span
+              initial={{
+                opacity: 0,
+              }}
+              whileInView={{
+                opacity: 1,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                duration: 1,
+                delay: 0.5,
+              }}
               className="
                 hidden
                 pb-2
@@ -590,7 +1008,8 @@ export function AtelierSections() {
               "
             >
               03 / WORDS
-            </span>
+            </motion.span>
+
           </div>
 
           {/* Quotes */}
@@ -598,45 +1017,85 @@ export function AtelierSections() {
           <div className="mt-20 grid border-t border-white/[0.08] md:grid-cols-3">
 
             {testimonials.map((item, index) => (
+
               <motion.div
                 key={item.role}
                 initial={{
                   opacity: 0,
-                  y: 25,
+                  y: 80,
+                  scale: 0.96,
                 }}
                 whileInView={{
                   opacity: 1,
                   y: 0,
+                  scale: 1,
                 }}
                 viewport={{
                   once: true,
                   amount: 0.25,
                 }}
                 transition={{
-                  duration: 0.7,
-                  delay: index * 0.1,
+                  duration: 1,
+                  delay: index * 0.18,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                whileHover={{
+                  y: -10,
+                  transition: {
+                    duration: 0.4,
+                  },
                 }}
                 className="
+                  group
                   border-b
                   border-r
                   border-white/[0.08]
                   p-8
+                  transition-colors
+                  duration-500
+                  hover:bg-white/[0.025]
                   md:min-h-[360px]
                   md:p-10
                 "
               >
-                <span
-                  className="
-                    font-mono
-                    text-[8px]
-                    tracking-[0.2em]
-                    text-white/25
-                  "
-                >
-                  0{index + 1}
-                </span>
 
-                <blockquote
+                <div className="flex items-center justify-between">
+
+                  <span
+                    className="
+                      font-mono
+                      text-[8px]
+                      tracking-[0.2em]
+                      text-white/25
+                    "
+                  >
+                    0{index + 1}
+                  </span>
+
+                  <motion.span
+                    initial={{ width: 24 }}
+                    whileHover={{ width: 48 }}
+                    className="h-px bg-white/20"
+                  />
+
+                </div>
+
+                <motion.blockquote
+                  initial={{
+                    opacity: 0,
+                    y: 20,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
+                  transition={{
+                    duration: 0.7,
+                    delay: index * 0.18 + 0.25,
+                  }}
                   className="
                     mt-24
                     text-[1.35rem]
@@ -652,7 +1111,7 @@ export function AtelierSections() {
                   }}
                 >
                   “{item.quote}”
-                </blockquote>
+                </motion.blockquote>
 
                 <div
                   className="
@@ -665,14 +1124,41 @@ export function AtelierSections() {
                 >
                   {item.role}
                 </div>
+
               </motion.div>
+
             ))}
 
           </div>
 
           {/* Closing line */}
 
-          <div className="mt-20 border-t border-white/[0.08] pt-8">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 40,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            transition={{
+              duration: 1,
+              delay: 0.2,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              mt-20
+              border-t
+              border-white/[0.08]
+              pt-8
+            "
+          >
+
             <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
 
               <p
@@ -696,47 +1182,12 @@ export function AtelierSections() {
                 they represent.
               </p>
 
-              <a
-                href="#contact"
-                className="
-                  group
-                  inline-flex
-                  items-center
-                  gap-4
-                  self-start
-                  border
-                  border-white/15
-                  px-5
-                  py-4
-                  font-mono
-                  text-[8px]
-                  tracking-[0.2em]
-                  text-white/65
-                  transition-all
-                  duration-500
-                  hover:border-white/50
-                  hover:text-white
-                  md:self-auto
-                "
-              >
-                START A COMMISSION
-
-                <ArrowUpRight
-                  size={14}
-                  strokeWidth={1}
-                  className="
-                    transition-transform
-                    duration-500
-                    group-hover:-translate-y-1
-                    group-hover:translate-x-1
-                  "
-                />
-              </a>
-
             </div>
-          </div>
+
+          </motion.div>
 
         </div>
+
       </section>
 
     </div>
