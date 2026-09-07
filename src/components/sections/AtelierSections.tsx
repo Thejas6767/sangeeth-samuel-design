@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
-import {
-  ArrowUpRight,
-} from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 const craftsmanship = [
   {
@@ -65,16 +63,12 @@ const testimonials = [
   },
 ];
 
-/* =========================================================
-   CINEMATIC ANIMATION
-========================================================= */
-
 export function AtelierSections() {
   return (
     <div className="relative bg-[#0A0A09] text-[#F2F1EC]">
 
       {/* =========================================================
-          CRAFTSMANSHIP / THE MAKING
+          THE MAKING
       ========================================================= */}
 
       <section
@@ -93,7 +87,7 @@ export function AtelierSections() {
         "
       >
 
-        {/* Cinematic background zoom */}
+        {/* Background */}
 
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
@@ -104,8 +98,8 @@ export function AtelierSections() {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{
-              duration: 2,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 2.5,
+              ease: 'easeOut',
             }}
             className="
               absolute
@@ -113,31 +107,29 @@ export function AtelierSections() {
               h-full
               w-full
               object-cover
-              opacity-[0.55]
+              opacity-[0.18]
               grayscale
             "
           />
 
-          <div className="
-            absolute
-            inset-0
-            bg-[#0A0A09]/50
-          " />
+          <div className="absolute inset-0 bg-[#0A0A09]/55" />
 
-          <div className="
-            absolute
-            inset-0
-            bg-gradient-to-b
-            from-[#0A0A09]/90
-            via-transparent
-            to-[#0A0A09]
-          " />
+          <div
+            className="
+              absolute
+              inset-0
+              bg-gradient-to-b
+              from-[#0A0A09]/75
+              via-transparent
+              to-[#0A0A09]
+            "
+          />
 
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1440px]">
 
-          {/* Header */}
+          {/* Heading */}
 
           <div className="flex items-end justify-between gap-8">
 
@@ -146,7 +138,7 @@ export function AtelierSections() {
               <motion.div
                 initial={{
                   opacity: 0,
-                  x: -30,
+                  x: -25,
                 }}
                 whileInView={{
                   opacity: 1,
@@ -154,21 +146,28 @@ export function AtelierSections() {
                 }}
                 viewport={{
                   once: true,
-                  amount: 0.25,
+                  amount: 0.3,
                 }}
                 transition={{
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.7,
+                  ease: 'easeOut',
                 }}
                 className="mb-5 flex items-center gap-3"
               >
+
                 <motion.span
-                  initial={{ width: 0 }}
-                  whileInView={{ width: 32 }}
-                  viewport={{ once: true }}
+                  initial={{
+                    width: 0,
+                  }}
+                  whileInView={{
+                    width: 32,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
                   transition={{
                     duration: 0.7,
-                    delay: 0.15,
+                    ease: 'easeOut',
                   }}
                   className="h-px bg-white/40"
                 />
@@ -183,39 +182,39 @@ export function AtelierSections() {
                 >
                   THE MAKING
                 </span>
+
               </motion.div>
-<motion.h2
-  initial={{
-    opacity: 0,
-    y: 60,
-    scale: 0.98,
-  }}
-  whileInView={{
-    opacity: 1,
-    y: 0,
-    scale: 1,
-  }}
-  viewport={{
-    once: true,
-    amount: 0.25,
-  }}
-  transition={{
-    duration: 1,
-    ease: [0.16, 1, 0.3, 1],
-  }}
-  className="
-    max-w-4xl
-    text-[2.8rem]
-    font-black
-    leading-[0.88]
-    tracking-[-0.05em]
-    sm:text-[4rem]
-    md:text-[5.5rem]
-  "
-  style={{
-    fontFamily: "'Archivo', sans-serif",
-  }}
->
+
+              <motion.h2
+                initial={{
+                  opacity: 0,
+                  y: 55,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.25,
+                }}
+                transition={{
+                  duration: 0.9,
+                  ease: 'easeOut',
+                }}
+                className="
+                  max-w-5xl
+                  text-[2.8rem]
+                  font-black
+                  leading-[0.88]
+                  tracking-[0.02em]
+                  sm:text-[4rem]
+                  md:text-[5.5rem]
+                "
+                style={{
+                  fontFamily: "'Archivo', sans-serif",
+                }}
+              >
                 CRAFTED
                 <br />
                 TO OUTLIVE
@@ -236,8 +235,8 @@ export function AtelierSections() {
                 once: true,
               }}
               transition={{
-                duration: 1,
-                delay: 0.5,
+                duration: 0.8,
+                delay: 0.4,
               }}
               className="
                 hidden
@@ -259,7 +258,7 @@ export function AtelierSections() {
           <motion.div
             initial={{
               opacity: 0,
-              y: 40,
+              y: 30,
             }}
             whileInView={{
               opacity: 1,
@@ -270,9 +269,9 @@ export function AtelierSections() {
               amount: 0.2,
             }}
             transition={{
-              duration: 0.9,
-              delay: 0.15,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 0.8,
+              delay: 0.1,
+              ease: 'easeOut',
             }}
             className="
               mt-16
@@ -319,9 +318,17 @@ export function AtelierSections() {
 
           </motion.div>
 
-          {/* Craft cards */}
+          {/* Craftsmanship Cards */}
 
-          <div className="mt-16 grid border-l border-white/[0.08] md:grid-cols-4">
+          <div
+            className="
+              mt-16
+              grid
+              border-l
+              border-white/[0.08]
+              md:grid-cols-4
+            "
+          >
 
             {craftsmanship.map((item, index) => (
 
@@ -329,30 +336,23 @@ export function AtelierSections() {
                 key={item.number}
                 initial={{
                   opacity: 0,
-                  y: 70,
-                  rotateX: 8,
-                  scale: 0.97,
+                  y: 60,
                 }}
                 whileInView={{
                   opacity: 1,
                   y: 0,
-                  rotateX: 0,
-                  scale: 1,
                 }}
                 viewport={{
                   once: true,
                   amount: 0.2,
                 }}
                 transition={{
-                  duration: 0.9,
-                  delay: index * 0.14,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.8,
+                  delay: index * 0.12,
+                  ease: 'easeOut',
                 }}
                 whileHover={{
-                  y: -8,
-                  transition: {
-                    duration: 0.35,
-                  },
+                  y: -6,
                 }}
                 className="
                   group
@@ -371,7 +371,20 @@ export function AtelierSections() {
 
                 <div className="flex items-center justify-between">
 
-                  <span
+                  <motion.span
+                    initial={{
+                      opacity: 0,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.12 + 0.15,
+                    }}
                     className="
                       font-mono
                       text-[9px]
@@ -380,7 +393,7 @@ export function AtelierSections() {
                     "
                   >
                     {item.number}
-                  </span>
+                  </motion.span>
 
                   <ArrowUpRight
                     size={15}
@@ -414,14 +427,20 @@ export function AtelierSections() {
                   </h3>
 
                   <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: 0 }}
-                    whileHover={{ width: 48 }}
-                    className="
-                      mt-3
-                      h-px
-                      bg-white/50
-                    "
+                    initial={{
+                      width: 0,
+                    }}
+                    whileInView={{
+                      width: 28,
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.12 + 0.25,
+                    }}
+                    className="mt-3 h-px bg-white/30"
                   />
 
                   <p
@@ -473,19 +492,25 @@ export function AtelierSections() {
         "
       >
 
-        {/* Cinematic background */}
+        {/* Background */}
 
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
           <motion.img
             src="/atelier/selected-work.jpg"
             alt=""
-            initial={{ scale: 1.1 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
+            initial={{
+              scale: 1.08,
+            }}
+            whileInView={{
+              scale: 1,
+            }}
+            viewport={{
+              once: true,
+            }}
             transition={{
-              duration: 2.2,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 2.5,
+              ease: 'easeOut',
             }}
             className="
               absolute
@@ -493,29 +518,29 @@ export function AtelierSections() {
               h-full
               w-full
               object-cover
-              opacity-[0.55]
+              opacity-[0.18]
               grayscale
             "
           />
 
-          <div className="
-            absolute
-            inset-0
-            bg-[#0A0A09]/50
-          " />
+          <div className="absolute inset-0 bg-[#0A0A09]/55" />
 
-          <div className="
-            absolute
-            inset-0
-            bg-gradient-to-b
-            from-[#0A0A09]/90
-            via-transparent
-            to-[#0A0A09]
-          " />
+          <div
+            className="
+              absolute
+              inset-0
+              bg-gradient-to-b
+              from-[#0A0A09]/75
+              via-transparent
+              to-[#0A0A09]
+            "
+          />
 
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1440px]">
+
+          {/* Heading */}
 
           <div className="flex items-end justify-between">
 
@@ -524,7 +549,7 @@ export function AtelierSections() {
               <motion.div
                 initial={{
                   opacity: 0,
-                  x: -30,
+                  x: -25,
                 }}
                 whileInView={{
                   opacity: 1,
@@ -532,17 +557,25 @@ export function AtelierSections() {
                 }}
                 viewport={{
                   once: true,
+                  amount: 0.3,
                 }}
                 transition={{
-                  duration: 0.8,
+                  duration: 0.7,
+                  ease: 'easeOut',
                 }}
                 className="mb-5 flex items-center gap-3"
               >
 
                 <motion.span
-                  initial={{ width: 0 }}
-                  whileInView={{ width: 32 }}
-                  viewport={{ once: true }}
+                  initial={{
+                    width: 0,
+                  }}
+                  whileInView={{
+                    width: 32,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
                   transition={{
                     duration: 0.7,
                   }}
@@ -562,38 +595,36 @@ export function AtelierSections() {
 
               </motion.div>
 
-            <motion.h2
-  initial={{
-    opacity: 0,
-    y: 60,
-    scale: 0.98,
-  }}
-  whileInView={{
-    opacity: 1,
-    y: 0,
-    scale: 1,
-  }}
-  viewport={{
-    once: true,
-    amount: 0.25,
-  }}
-  transition={{
-    duration: 1,
-    ease: [0.16, 1, 0.3, 1],
-  }}
-  className="
-    max-w-4xl
-    text-[2.8rem]
-    font-black
-    leading-[0.88]
-    tracking-[-0.05em]
-    sm:text-[4rem]
-    md:text-[5.5rem]
-  "
-  style={{
-    fontFamily: "'Archivo', sans-serif",
-  }}
->
+              <motion.h2
+                initial={{
+                  opacity: 0,
+                  y: 55,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.25,
+                }}
+                transition={{
+                  duration: 0.9,
+                  ease: 'easeOut',
+                }}
+                className="
+                  text-[2.8rem]
+                  font-black
+                  leading-[0.88]
+                  tracking-[-0.05em]
+                  sm:text-[4rem]
+                  md:text-[5.5rem]
+                "
+                style={{
+                  fontFamily:
+                    "'Archivo', sans-serif",
+                }}
+              >
                 OBJECTS
                 <br />
                 WITH
@@ -614,8 +645,8 @@ export function AtelierSections() {
                 once: true,
               }}
               transition={{
-                duration: 1,
-                delay: 0.5,
+                duration: 0.8,
+                delay: 0.4,
               }}
               className="
                 hidden
@@ -632,36 +663,18 @@ export function AtelierSections() {
 
           </div>
 
-          {/* Work list */}
+          {/* Work List
+              IMPORTANT:
+              These three titles are intentionally STATIC.
+          */}
 
           <div className="mt-20 border-t border-white/[0.08]">
 
-            {selectedWork.map((work, index) => (
+            {selectedWork.map((work) => (
 
-              <motion.div
+              <div
                 key={work.number}
-      initial={{
-  opacity: 0,
-  filter: "blur(6px)",
-}}
-
-whileInView={{
-  opacity: 1,
-  filter: "blur(0px)",
-}}
-
-viewport={{
-  once: true,
-  amount: 0.2,
-}}
-
-transition={{
-  duration: 0.8,
-  delay: index * 0.12,
-  ease: "easeOut",
-}}
                 className="
-                  group
                   relative
                   flex
                   min-h-[150px]
@@ -671,27 +684,13 @@ transition={{
                   border-b
                   border-white/[0.08]
                   py-8
-                  transition-all
-                  duration-500
                   md:min-h-[190px]
                 "
               >
 
                 <div className="flex items-center gap-7 md:gap-12">
 
-                  <motion.span
-                    initial={{
-                      opacity: 0,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                    }}
-                    viewport={{
-                      once: true,
-                    }}
-                    transition={{
-                      delay: index * 0.15 + 0.35,
-                    }}
+                  <span
                     className="
                       font-mono
                       text-[8px]
@@ -700,7 +699,7 @@ transition={{
                     "
                   >
                     {work.number}
-                  </motion.span>
+                  </span>
 
                   <div>
 
@@ -715,21 +714,25 @@ transition={{
                     >
                       {work.category}
                     </div>
-<h3
-  className="
-    text-[2rem]
-    font-black
-    leading-none
-    tracking-[-0.04em]
-    sm:text-[3rem]
-    md:text-[4.5rem]
-  "
-  style={{
-    fontFamily: "'Archivo', sans-serif",
-  }}
->
-  {work.title}
-</h3>
+
+                    {/* NO MOTION HERE */}
+
+                    <h3
+                      className="
+                        text-[2rem]
+                        font-black
+                        leading-none
+                        tracking-[-0.04em]
+                        sm:text-[3rem]
+                        md:text-[4.5rem]
+                      "
+                      style={{
+                        fontFamily:
+                          "'Archivo', sans-serif",
+                      }}
+                    >
+                      {work.title}
+                    </h3>
 
                     <div
                       className="
@@ -747,36 +750,18 @@ transition={{
 
                 </div>
 
-                <motion.div
-                  whileHover={{
-                    scale: 1.25,
-                    rotate: 90,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                  }}
-                  className="
-                    hidden
-                    h-2
-                    w-2
-                    rounded-full
-                    bg-white/30
-                    md:block
-                  "
-                />
-
-              </motion.div>
+              </div>
 
             ))}
 
           </div>
 
-          {/* Bottom statement */}
+          {/* Bottom Statement */}
 
           <motion.div
             initial={{
               opacity: 0,
-              y: 25,
+              y: 30,
             }}
             whileInView={{
               opacity: 1,
@@ -788,7 +773,7 @@ transition={{
             }}
             transition={{
               duration: 0.8,
-              delay: 0.2,
+              ease: 'easeOut',
             }}
             className="
               mt-12
@@ -833,7 +818,7 @@ transition={{
 
 
       {/* =========================================================
-          CLIENT WORDS / PHILOSOPHY
+          PHILOSOPHY
       ========================================================= */}
 
       <section
@@ -852,19 +837,25 @@ transition={{
         "
       >
 
-        {/* Cinematic background */}
+        {/* Background */}
 
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
           <motion.img
             src="/atelier/craftsmanship.jpg"
             alt=""
-            initial={{ scale: 1.1 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
+            initial={{
+              scale: 1.08,
+            }}
+            whileInView={{
+              scale: 1,
+            }}
+            viewport={{
+              once: true,
+            }}
             transition={{
-              duration: 2.4,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 2.5,
+              ease: 'easeOut',
             }}
             className="
               absolute
@@ -872,29 +863,29 @@ transition={{
               h-full
               w-full
               object-cover
-              opacity-[0.55]
+              opacity-[0.18]
               grayscale
             "
           />
 
-          <div className="
-            absolute
-            inset-0
-            bg-[#0A0A09]/55
-          " />
+          <div className="absolute inset-0 bg-[#0A0A09]/55" />
 
-          <div className="
-            absolute
-            inset-0
-            bg-gradient-to-b
-            from-[#0A0A09]/90
-            via-transparent
-            to-[#0A0A09]
-          " />
+          <div
+            className="
+              absolute
+              inset-0
+              bg-gradient-to-b
+              from-[#0A0A09]/75
+              via-transparent
+              to-[#0A0A09]
+            "
+          />
 
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1440px]">
+
+          {/* Heading */}
 
           <div className="flex items-end justify-between">
 
@@ -903,25 +894,33 @@ transition={{
               <motion.div
                 initial={{
                   opacity: 0,
-                  
+                  x: -25,
                 }}
                 whileInView={{
                   opacity: 1,
-                 
+                  x: 0,
                 }}
                 viewport={{
                   once: true,
+                  amount: 0.3,
                 }}
                 transition={{
-                  duration: 0.8,
+                  duration: 0.7,
+                  ease: 'easeOut',
                 }}
                 className="mb-5 flex items-center gap-3"
               >
 
                 <motion.span
-                  initial={{ width: 0 }}
-                  whileInView={{ width: 32 }}
-                  viewport={{ once: true }}
+                  initial={{
+                    width: 0,
+                  }}
+                  whileInView={{
+                    width: 32,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
                   transition={{
                     duration: 0.7,
                   }}
@@ -940,38 +939,38 @@ transition={{
                 </span>
 
               </motion.div>
-<motion.h2
-  initial={{
-    opacity: 0,
-    y: 60,
-    scale: 0.98,
-  }}
-  whileInView={{
-    opacity: 1,
-    y: 0,
-    scale: 1,
-  }}
-  viewport={{
-    once: true,
-    amount: 0.25,
-  }}
-  transition={{
-    duration: 1,
-    ease: [0.16, 1, 0.3, 1],
-  }}
-  className="
-    max-w-4xl
-    text-[2.8rem]
-    font-black
-    leading-[0.88]
-    tracking-[-0.05em]
-    sm:text-[4rem]
-    md:text-[5.5rem]
-  "
-  style={{
-    fontFamily: "'Archivo', sans-serif",
-  }}
->
+
+              <motion.h2
+                initial={{
+                  opacity: 0,
+                  y: 55,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.25,
+                }}
+                transition={{
+                  duration: 0.9,
+                  ease: 'easeOut',
+                }}
+                className="
+                  max-w-4xl
+                  text-[2.8rem]
+                  font-black
+                  leading-[0.88]
+                  tracking-[-0.05em]
+                  sm:text-[4rem]
+                  md:text-[5.5rem]
+                "
+                style={{
+                  fontFamily:
+                    "'Archivo', sans-serif",
+                }}
+              >
                 THE OBJECT
                 <br />
                 SHOULD
@@ -994,8 +993,8 @@ transition={{
                 once: true,
               }}
               transition={{
-                duration: 1,
-                delay: 0.5,
+                duration: 0.8,
+                delay: 0.4,
               }}
               className="
                 hidden
@@ -1012,9 +1011,17 @@ transition={{
 
           </div>
 
-          {/* Quotes */}
+          {/* Philosophy Cards */}
 
-          <div className="mt-20 grid border-t border-white/[0.08] md:grid-cols-3">
+          <div
+            className="
+              mt-20
+              grid
+              border-t
+              border-white/[0.08]
+              md:grid-cols-3
+            "
+          >
 
             {testimonials.map((item, index) => (
 
@@ -1022,34 +1029,30 @@ transition={{
                 key={item.role}
                 initial={{
                   opacity: 0,
-                  y: 80,
-                  scale: 0.96,
+                  y: 55,
                 }}
                 whileInView={{
                   opacity: 1,
                   y: 0,
-                  scale: 1,
                 }}
                 viewport={{
                   once: true,
                   amount: 0.25,
                 }}
                 transition={{
-                  duration: 1,
-                  delay: index * 0.18,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.8,
+                  delay: index * 0.14,
+                  ease: 'easeOut',
                 }}
                 whileHover={{
-                  y: -10,
-                  transition: {
-                    duration: 0.4,
-                  },
+                  y: -6,
                 }}
                 className="
                   group
                   border-b
                   border-r
                   border-white/[0.08]
+                  bg-black/[0.08]
                   p-8
                   transition-colors
                   duration-500
@@ -1061,7 +1064,20 @@ transition={{
 
                 <div className="flex items-center justify-between">
 
-                  <span
+                  <motion.span
+                    initial={{
+                      opacity: 0,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.14 + 0.2,
+                    }}
                     className="
                       font-mono
                       text-[8px]
@@ -1070,11 +1086,19 @@ transition={{
                     "
                   >
                     0{index + 1}
-                  </span>
+                  </motion.span>
 
                   <motion.span
-                    initial={{ width: 24 }}
-                    whileHover={{ width: 48 }}
+                    initial={{
+                      width: 24,
+                    }}
+                    whileHover={{
+                      width: 48,
+                    }}
+                    transition={{
+                      duration: 0.35,
+                      ease: 'easeOut',
+                    }}
                     className="h-px bg-white/20"
                   />
 
@@ -1094,7 +1118,7 @@ transition={{
                   }}
                   transition={{
                     duration: 0.7,
-                    delay: index * 0.18 + 0.25,
+                    delay: index * 0.14 + 0.25,
                   }}
                   className="
                     mt-24
@@ -1131,12 +1155,12 @@ transition={{
 
           </div>
 
-          {/* Closing line */}
+          {/* Closing Statement */}
 
           <motion.div
             initial={{
               opacity: 0,
-              y: 40,
+              y: 35,
             }}
             whileInView={{
               opacity: 1,
@@ -1147,9 +1171,8 @@ transition={{
               amount: 0.2,
             }}
             transition={{
-              duration: 1,
-              delay: 0.2,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 0.8,
+              ease: 'easeOut',
             }}
             className="
               mt-20
@@ -1159,7 +1182,16 @@ transition={{
             "
           >
 
-            <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+            <div
+              className="
+                flex
+                flex-col
+                justify-between
+                gap-8
+                md:flex-row
+                md:items-end
+              "
+            >
 
               <p
                 className="
