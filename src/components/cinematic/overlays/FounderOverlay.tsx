@@ -2,6 +2,8 @@ import {
   motion,
   type MotionValue,
   useTransform,
+  useMotionValue,
+  useSpring,
 } from 'framer-motion';
 
 import {
@@ -72,6 +74,37 @@ export function FounderOverlay({
         ? 'flex'
         : 'none',
   );
+
+  /*
+   * Interactive 3D Card Hover Setup
+   */
+  const x = useMotionValue(0);
+  const yRot = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15 });
+  const mouseYSpring = useSpring(yRot, { stiffness: 150, damping: 15 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['10deg', '-10deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-10deg', '10deg']);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    yRot.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    yRot.set(0);
+  };
 
   return (
     <motion.div
@@ -147,28 +180,28 @@ export function FounderOverlay({
             THE MIND BEHIND THE OBJECT
           </Eyebrow>
 
-         <motion.h2
-  initial={{ opacity: 0, y: 28 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{
-    duration: 0.85,
-    delay: 0.18,
-    ease,
-  }}
-  className="
-    mt-4
-    text-[2rem]
-    font-black
-    leading-[0.93]
-    tracking-[-0.045em]
-    sm:mt-5
-    sm:text-[3rem]
-    md:text-[4rem]
-  "
-  style={{
-    fontFamily: FONT_DISPLAY,
-  }}
->
+          <motion.h2
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.85,
+              delay: 0.18,
+              ease,
+            }}
+            className="
+              mt-4
+              text-[2rem]
+              font-black
+              leading-[0.93]
+              tracking-[-0.045em]
+              sm:mt-5
+              sm:text-[3rem]
+              md:text-[4rem]
+            "
+            style={{
+              fontFamily: FONT_DISPLAY,
+            }}
+          >
             SANGEETH
             <br className="hidden sm:inline" />
             {' '}
@@ -313,19 +346,21 @@ export function FounderOverlay({
           </motion.div>
         </motion.div>
 
-        {/* FOUNDER IMAGE */}
+        {/* FOUNDER IMAGE SECTION WITH 3D PARALLAX & SCANNER LIGHT */}
         <motion.div
           initial={{
             opacity: 0,
-            x: 18,
+            x: 30,
+            scale: 0.95,
           }}
           animate={{
             opacity: 1,
             x: 0,
+            scale: 1,
           }}
           transition={{
-            duration: 0.7,
-            delay: 0.12,
+            duration: 0.8,
+            delay: 0.15,
             ease,
           }}
           className="
@@ -333,53 +368,123 @@ export function FounderOverlay({
             w-full
             max-w-[330px]
             lg:ml-auto
+            [perspective:1000px]
           "
         >
-          <div
+          <motion.div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              rotateX,
+              rotateY,
+              transformStyle: 'preserve-3d',
+            }}
             className="
               relative
               border
               border-white/15
               p-2
               sm:p-3
+              group
+              cursor-pointer
+              transition-shadow
+              duration-500
+              hover:shadow-[0_20px_50px_rgba(255,255,255,0.05)]
             "
           >
-            {/* CORNER MARKS */}
-            <div className="absolute -left-px -top-px h-8 w-8 border-l border-t border-white/65" />
-            <div className="absolute -right-px -top-px h-8 w-8 border-r border-t border-white/65" />
-            <div className="absolute -bottom-px -left-px h-8 w-8 border-b border-l border-white/65" />
-            <div className="absolute -bottom-px -right-px h-8 w-8 border-b border-r border-white/65" />
+            {/* ANIMATED CORNER MARKS (DRAW EFFECT) */}
+            <motion.div 
+              initial={{ scaleX: 0, scaleY: 0 }}
+              animate={{ scaleX: 1, scaleY: 1 }}
+              transition={{ delay: 0.3, duration: 0.5, ease }}
+              className="absolute -left-px -top-px h-8 w-8 border-l border-t border-white/80 origin-top-left" 
+            />
+            <motion.div 
+              initial={{ scaleX: 0, scaleY: 0 }}
+              animate={{ scaleX: 1, scaleY: 1 }}
+              transition={{ delay: 0.35, duration: 0.5, ease }}
+              className="absolute -right-px -top-px h-8 w-8 border-r border-t border-white/80 origin-top-right" 
+            />
+            <motion.div 
+              initial={{ scaleX: 0, scaleY: 0 }}
+              animate={{ scaleX: 1, scaleY: 1 }}
+              transition={{ delay: 0.4, duration: 0.5, ease }}
+              className="absolute -bottom-px -left-px h-8 w-8 border-b border-l border-white/80 origin-bottom-left" 
+            />
+            <motion.div 
+              initial={{ scaleX: 0, scaleY: 0 }}
+              animate={{ scaleX: 1, scaleY: 1 }}
+              transition={{ delay: 0.45, duration: 0.5, ease }}
+              className="absolute -bottom-px -right-px h-8 w-8 border-b border-r border-white/80 origin-bottom-right" 
+            />
 
-            <div className="
-              relative
-              aspect-[4/5]
-              overflow-hidden
-              bg-[#151513]
-            ">
-              <img
+            <div 
+              className="
+                relative
+                aspect-[4/5]
+                overflow-hidden
+                bg-[#151513]
+              "
+              style={{ transform: 'translateZ(20px)' }}
+            >
+              {/* IMAGE UNMASK REVEAL */}
+              <motion.img
                 src="/owner.png"
                 alt="Sangeeth Samuel - Founder & Principal Designer"
                 loading="lazy"
+                initial={{ scale: 1.25, filter: 'grayscale(100%) contrast(110%) brightness(0.8)' }}
+                animate={{ scale: 1, filter: 'grayscale(100%) contrast(105%) brightness(1)' }}
+                whileHover={{ scale: 1.08, filter: 'grayscale(20%) contrast(115%) brightness(1.05)' }}
+                transition={{ duration: 0.7, ease }}
                 className="
                   h-full
                   w-full
                   object-cover
-                  grayscale
-                  contrast-105
                 "
               />
 
+              {/* AMBIENT LIGHT STREAK / SCANNER ANIMATION */}
+              <motion.div
+                initial={{ x: '-100%', opacity: 0 }}
+                animate={{ x: '200%', opacity: [0, 0.4, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  repeatDelay: 4,
+                  duration: 1.8,
+                  ease: 'easeInOut',
+                  delay: 0.8,
+                }}
+                className="
+                  pointer-events-none
+                  absolute
+                  inset-0
+                  w-1/2
+                  -skew-x-12
+                  bg-gradient-to-r
+                  from-transparent
+                  via-white/20
+                  to-transparent
+                "
+              />
+
+              {/* GRADIENT OVERLAY */}
               <div className="
                 absolute
                 inset-x-0
                 bottom-0
                 h-24
                 bg-gradient-to-t
-                from-[#0A0A09]/75
+                from-[#0A0A09]/90
                 to-transparent
+                pointer-events-none
               " />
 
-              <div
+              {/* BADGE TEXT WITH POP-OUT PARALLAX */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55, duration: 0.5, ease }}
+                style={{ transform: 'translateZ(30px)' }}
                 className="
                   absolute
                   bottom-3
@@ -394,22 +499,20 @@ export function FounderOverlay({
                   font-mono
                   text-[8px]
                   tracking-[0.16em]
-                  text-white/70
+                  text-white/80
+                  backdrop-blur-[2px]
                 "
-                style={{
-                  fontFamily: FONT_MONO,
-                }}
               >
                 <span>
                   SANGEETH SAMUEL
                 </span>
 
-                <span className="text-white/35">
+                <span className="text-white/40">
                   BANGALORE
                 </span>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </motion.div>
