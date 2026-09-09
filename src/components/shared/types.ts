@@ -20,7 +20,8 @@ export const ARCHIVE_PROJECTS: TrophyItem[] = [
     year: '2022',
     image: '/trophy1.png',
     materials: 'Anodized Brass, Multi-Layered Acrylic, Solid Metal Base',
-    description: 'Inspired by South Indian temple architecture (Gopuram), combining heritage silhouette with precision rally geometry for Round 1 winner of the Indian National Rally Championship.',
+    description:
+      'Inspired by South Indian temple architecture (Gopuram), combining heritage silhouette with precision rally geometry for Round 1 winner of the Indian National Rally Championship.',
   },
   {
     id: 'inrc-red-pillar-2023',
@@ -30,8 +31,10 @@ export const ARCHIVE_PROJECTS: TrophyItem[] = [
     category: 'Motorsport Championship',
     year: '2023',
     image: '/trophy2.png',
-    materials: 'Matte Black Anodized Aluminium, Crimson Internal Illumination, Engraved Graphics',
-    description: 'A striking architectural column featuring internal crimson illumination and high-density automotive graphics celebrating speed, endurance, and rally precision.',
+    materials:
+      'Matte Black Anodized Aluminium, Crimson Internal Illumination, Engraved Graphics',
+    description:
+      'A striking architectural column featuring internal crimson illumination and high-density automotive graphics celebrating speed, endurance, and rally precision.',
   },
   {
     id: 'twisted-gold-star-2024',
@@ -41,8 +44,10 @@ export const ARCHIVE_PROJECTS: TrophyItem[] = [
     category: 'Corporate & Excellence',
     year: '2024',
     image: '/trophy3.png',
-    materials: 'Polished 24k Gold Electroplated Bronze, Nero Marquina Black Marble Base',
-    description: 'A continuous ribbon of sculpted gold that twists 180 degrees into a five-pointed star symbolising ascension, fluid motion, and extraordinary leadership.',
+    materials:
+      'Polished 24k Gold Electroplated Bronze, Nero Marquina Black Marble Base',
+    description:
+      'A continuous ribbon of sculpted gold that twists 180 degrees into a five-pointed star symbolising ascension, fluid motion, and extraordinary leadership.',
   },
   {
     id: 'sports-mirror-gold-2024',
@@ -52,8 +57,10 @@ export const ARCHIVE_PROJECTS: TrophyItem[] = [
     category: 'Sports & Athletics',
     year: '2024',
     image: '/trophy4.png',
-    materials: 'Mirror Gold Acrylic, High-Gloss Composite Base, Laser-Engraved Crest',
-    description: 'Capturing the dynamic energy of victory with a gold mirror acrylic athletic silhouette soaring inside a circular emblem mounted on an obsidian pedestal.',
+    materials:
+      'Mirror Gold Acrylic, High-Gloss Composite Base, Laser-Engraved Crest',
+    description:
+      'Capturing the dynamic energy of victory with a gold mirror acrylic athletic silhouette soaring inside a circular emblem mounted on an obsidian pedestal.',
   },
 ];
 
@@ -83,7 +90,8 @@ export const PROCESS_STEPS: ProcessStep[] = [
   {
     id: 'research',
     title: 'Research Based Approach',
-    subtitle: 'Your unique needs are considered and followed by extensive research to deliver.',
+    subtitle:
+      'Your unique needs are considered and followed by extensive research to deliver.',
     body: 'As a team we understand how crucial it is to empathize with the client on their needs. Our aim is to solve your problem typically through well researched options. We strive to set aside our assumptions and gain real insight into your needs as a client.',
     labels: ['Discovery', 'Insight'],
   },

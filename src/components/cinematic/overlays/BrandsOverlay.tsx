@@ -6,7 +6,6 @@ import {
   SCROLL_TIMELINE,
 } from '../../shared/constants';
 import { BRAND_PARTNERS } from '../../shared/types';
-import { Eyebrow } from '../../shared/Eyebrow';
 import { ChapterMark } from '../../shared/ChapterMark';
 
 interface Props {
@@ -203,9 +202,7 @@ export function BrandsOverlay({
         "
       >
         <div className="mb-9 max-w-2xl sm:mb-12">
-          <Eyebrow dark>
-            COMMISSIONED BY CHAMPIONSHIPS
-          </Eyebrow>
+        
 
           <h2
             className="

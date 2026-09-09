@@ -47,6 +47,14 @@ export const NAV_LINKS = [
 
 /*
 |--------------------------------------------------------------------------
+| MOBILE VIEWPORT CHECK
+|--------------------------------------------------------------------------
+*/
+
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+/*
+|--------------------------------------------------------------------------
 | MASTER SCROLL TIMELINE
 |--------------------------------------------------------------------------
 |
@@ -129,13 +137,13 @@ export const SCROLL_TIMELINE = {
 
   CONTACT: {
     start: 0.90,
-    mid: 0.935,
-    end: 0.965,
+    mid: isMobile ? 0.95 : 0.935,
+    end: isMobile ? 1.00 : 0.965,
   },
 
   LOGO_END: {
-    start: 0.975,
-    mid: 0.988,
+    start: isMobile ? 1.00 : 0.975,
+    mid: isMobile ? 1.00 : 0.988,
     end: 1.00,
   },
 } as const;

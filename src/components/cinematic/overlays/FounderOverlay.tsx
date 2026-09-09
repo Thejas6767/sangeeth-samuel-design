@@ -271,9 +271,11 @@ export function FounderOverlay({
 
             <blockquote
               className="
+                hidden
                 border-l
                 border-white/25
                 pl-5
+                sm:block
                 sm:pl-6
               "
               style={{

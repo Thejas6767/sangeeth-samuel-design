@@ -28,6 +28,7 @@ export function Navbar({
 }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [lightSection, setLightSection] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -198,39 +199,21 @@ export function Navbar({
     },
   };
 
-  const navbarClass = lightSection
-    ? `
-      border
-      border-black/10
-      bg-[#F2F1EC]/55
-      py-2.5
-      backdrop-blur-xl
-      rounded-2xl
-    `
-    : `
-      border
-      border-white/15
-      bg-white/[0.035]
-      py-2.5
-      backdrop-blur-xl
-      rounded-2xl
-    `;
+  /* DESKTOP PILL CONTAINER STYLING */
+  const desktopPillStyle = lightSection
+    ? 'md:border-black/25 md:bg-[#F2F1EC]/95 md:text-black md:shadow-xl md:backdrop-blur-2xl'
+    : 'md:border-white/30 md:bg-[#0A0A09]/95 md:text-white md:shadow-2xl md:backdrop-blur-2xl';
 
   const navTextClass = lightSection
-    ? `
-      text-black/60
-      hover:text-black
-    `
-    : `
-      text-white/65
-      hover:text-white
-    `;
+    ? 'text-black hover:text-black/70'
+    : 'text-white hover:text-white/70';
 
   return (
     <>
       <motion.header
+        layout
         initial={{
-          y: -60,
+          y: -40,
           opacity: 0,
         }}
         animate={{
@@ -243,47 +226,47 @@ export function Navbar({
         }}
         className="
           fixed
-          left-0
-          right-0
+          inset-x-0
           top-0
           z-50
+          mx-auto
+          flex
+          w-full
+          max-w-full
+          justify-center
+          overflow-x-hidden
           px-4
-          py-3
+          pt-4
           sm:px-6
           md:px-10
-          lg:px-12
         "
       >
+        {/* NAVBAR CONTAINER */}
         <motion.div
           animate={{
-            backgroundColor: lightSection
-              ? 'rgba(242, 241, 236, 0.55)'
-              : 'rgba(255, 255, 255, 0.035)',
-
-            borderColor: lightSection
-              ? 'rgba(0, 0, 0, 0.10)'
-              : 'rgba(255, 255, 255, 0.15)',
+            scale: scrolled && !menuOpen ? 0.98 : 1,
           }}
           transition={{
-            duration: 0.6,
+            duration: 0.4,
             ease,
           }}
           className={`
-            mx-auto
+            relative
             flex
-            max-w-[1440px]
+            w-full
+            max-w-4xl
             items-center
             justify-between
-            px-3
+            bg-transparent
+            px-2
+            py-1
             transition-all
-            duration-700
-            sm:px-4
-
-            ${
-              scrolled && !menuOpen
-                ? navbarClass
-                : 'py-2'
-            }
+            duration-500
+            md:rounded-full
+            md:border
+            md:px-8
+            md:py-2.5
+            ${desktopPillStyle}
           `}
         >
           {/* LOGO */}
@@ -298,9 +281,13 @@ export function Navbar({
               });
             }}
             className="
-              group
+              relative
+              z-10
               flex
+              shrink-0
               items-center
+              justify-center
+              py-1
               focus-premium
             "
             aria-label="Sangeeth Samuel Design Home"
@@ -308,29 +295,29 @@ export function Navbar({
             <motion.img
               src={logoImg}
               alt="Sangeeth Samuel Design"
-              animate={{
+              style={{
                 filter: lightSection
-                  ? 'brightness(0) saturate(100%)'
-                  : 'brightness(1) saturate(100%)',
+                  ? 'var(--logo-filter, brightness(200%) contrast(100%))'
+                  : 'brightness(200%) contrast(100%)',
               }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               transition={{
-                duration: 0.5,
+                duration: 0.3,
                 ease,
               }}
               className="
-                h-12
+                h-8
                 w-auto
-                scale-[1.35]
-                origin-left
+                max-w-[140px]
                 object-contain
-                opacity-95
-                transition-opacity
-                duration-500
-                group-hover:opacity-100
-                sm:h-14
-                sm:scale-[1.35]
-                md:h-16
-                md:scale-[1.35]
+                opacity-100
+                [--logo-filter:brightness(200%)_contrast(100%)]
+                sm:h-10
+                sm:max-w-[160px]
+                md:h-12
+                md:max-w-[200px]
+                md:[--logo-filter:brightness(0)]
               "
             />
           </button>
@@ -340,19 +327,22 @@ export function Navbar({
             variants={desktopVariants}
             initial="hidden"
             animate="show"
+            onMouseLeave={() => setHoveredIndex(null)}
             className="
+              relative
               hidden
               items-center
-              gap-8
+              gap-1
               md:flex
-              lg:gap-10
+              lg:gap-2
             "
           >
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((link, idx) => (
               <motion.button
                 key={link.label}
                 variants={itemVariants}
                 type="button"
+                onMouseEnter={() => setHoveredIndex(idx)}
                 onClick={() => {
                   playSound('click');
                   scrollToProgress(
@@ -360,14 +350,17 @@ export function Navbar({
                   );
                 }}
                 className={`
-                  group
                   relative
+                  z-10
+                  rounded-full
+                  px-4
                   py-2
                   font-mono
-                  text-[9px]
-                  tracking-[0.2em]
+                  text-[11px]
+                  font-semibold
+                  tracking-[0.22em]
                   transition-colors
-                  duration-500
+                  duration-300
                   focus-premium
                   ${navTextClass}
                 `}
@@ -375,26 +368,29 @@ export function Navbar({
                   fontFamily: FONT_MONO,
                 }}
               >
-                {link.label}
+                {hoveredIndex === idx && (
+                  <motion.div
+                    layoutId="hoverPill"
+                    className={`
+                      absolute
+                      inset-0
+                      z-[-1]
+                      rounded-full
+                      ${
+                        lightSection
+                          ? 'bg-black/15'
+                          : 'bg-white/20 backdrop-blur-sm'
+                      }
+                    `}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 400,
+                      damping: 30,
+                    }}
+                  />
+                )}
 
-                <motion.span
-                  className={`
-                    absolute
-                    bottom-0
-                    left-0
-                    h-px
-                    w-0
-                    transition-all
-                    duration-500
-                    group-hover:w-full
-
-                    ${
-                      lightSection
-                        ? 'bg-black'
-                        : 'bg-white'
-                    }
-                  `}
-                />
+                <span>{link.label}</span>
               </motion.button>
             ))}
           </motion.nav>
@@ -402,29 +398,31 @@ export function Navbar({
           {/* MOBILE MENU BUTTON */}
           <motion.button
             type="button"
-            animate={{
-              color: lightSection
-                ? '#0A0A09'
-                : '#F2F1EC',
-
-              borderColor: lightSection
-                ? 'rgba(0, 0, 0, 0.12)'
-                : 'rgba(255, 255, 255, 0.10)',
-            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             transition={{
-              duration: 0.5,
+              duration: 0.3,
               ease,
             }}
             className="
               flex
               h-11
               w-11
+              shrink-0
               items-center
               justify-center
+              rounded-full
               border
+              border-white/20
+              bg-white/10
+              text-[#F2F1EC]
+              backdrop-blur-md
               md:hidden
               focus-premium
             "
+            style={{
+              color: lightSection ? 'var(--btn-color, #F2F1EC)' : '#F2F1EC',
+            }}
             aria-label={
               menuOpen
                 ? 'Close navigation menu'
@@ -439,20 +437,20 @@ export function Navbar({
           >
             {menuOpen ? (
               <X
-                size={19}
-                strokeWidth={1.2}
+                size={20}
+                strokeWidth={2}
               />
             ) : (
               <Menu
-                size={19}
-                strokeWidth={1.2}
+                size={20}
+                strokeWidth={2}
               />
             )}
           </motion.button>
         </motion.div>
       </motion.header>
 
-      {/* MOBILE FULLSCREEN MENU */}
+      {/* MOBILE FULLSCREEN MENU OVERLAY */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -473,8 +471,11 @@ export function Navbar({
               inset-0
               z-40
               flex
+              w-full
+              max-w-full
               flex-col
               justify-center
+              overflow-hidden
               bg-[#0A0A09]/98
               px-8
               backdrop-blur-2xl
@@ -500,6 +501,7 @@ export function Navbar({
                   key={link.label}
                   variants={mobileItemVariants}
                   type="button"
+                  whileHover={{ x: 8 }}
                   onClick={() => {
                     playSound('click');
                     setMenuOpen(false);
@@ -522,6 +524,8 @@ export function Navbar({
                     leading-none
                     tracking-[-0.04em]
                     text-white
+                    transition-colors
+                    hover:text-white/70
                     focus-premium
                     sm:text-[3.5rem]
                   "
@@ -542,7 +546,8 @@ export function Navbar({
                 flex
                 gap-6
                 font-mono
-                text-[8px]
+                text-[9px]
+                font-bold
                 tracking-[0.18em]
                 text-[#8C8C87]
                 sm:left-14
@@ -551,29 +556,7 @@ export function Navbar({
                 fontFamily: FONT_MONO,
               }}
             >
-              <a
-                href="https://www.instagram.com/the6t9th/"
-                target="_blank"
-                rel="noreferrer"
-                className="
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                INSTAGRAM
-              </a>
-
-              <a
-                href="https://www.facebook.com/pages/category/Product-Service/6T9th-102211121649149/"
-                target="_blank"
-                rel="noreferrer"
-                className="
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                FACEBOOK
-              </a>
+         
             </div>
           </motion.div>
         )}

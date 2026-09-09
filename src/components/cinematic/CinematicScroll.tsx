@@ -112,9 +112,9 @@ export function CinematicScroll({
       className="
         relative
         w-full
-        h-[600vh]
-        sm:h-[720vh]
-        lg:h-[820vh]
+        h-[520vh]
+        sm:h-[620vh]
+        lg:h-[700vh]
         bg-[#0A0A09]
       "
     >
@@ -127,32 +127,32 @@ export function CinematicScroll({
 
       <div
         id="manifesto"
-        className="absolute top-[14%]"
+        className="absolute top-[16%]"
       />
 
       <div
         id="brands"
-        className="absolute top-[31%]"
+        className="absolute top-[35%]"
       />
 
       <div
         id="work"
-        className="absolute top-[48%]"
+        className="absolute top-[54%]"
       />
 
       <div
         id="process"
-        className="absolute top-[68%]"
+        className="absolute top-[76%]"
       />
 
       <div
         id="founder"
-        className="absolute top-[84%]"
+        className="absolute top-[90%]"
       />
 
       <div
         id="contact"
-        className="absolute top-[93%]"
+        className="absolute top-[97%]"
       />
 
       {/* Sticky cinematic viewport */}
@@ -230,8 +230,6 @@ export function CinematicScroll({
         <ContactOverlay
           scrollYProgress={scrollYProgress}
         />
-
-        {/* LogoEndOverlay intentionally disabled */}
 
         {/* Desktop scroll index */}
 

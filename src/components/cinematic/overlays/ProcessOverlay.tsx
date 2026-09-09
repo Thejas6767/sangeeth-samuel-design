@@ -16,6 +16,7 @@ import { PROCESS_STEPS } from '../../shared/types';
 import { Eyebrow } from '../../shared/Eyebrow';
 import { ChapterMark } from '../../shared/ChapterMark';
 import { playSound } from '../../../utils/audioEngine';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 interface Props {
   scrollYProgress: MotionValue<number>;
@@ -56,6 +57,8 @@ export function ProcessOverlay({
         ? 'flex'
         : 'none',
   );
+
+  const progressPercent = ((activeStep + 1) / PROCESS_STEPS.length) * 100;
 
   return (
     <motion.div
@@ -99,6 +102,7 @@ export function ProcessOverlay({
       <motion.div
         style={{ y }}
         className="
+          relative
           mx-auto
           grid
           w-full
@@ -109,70 +113,99 @@ export function ProcessOverlay({
           lg:gap-14
         "
       >
-        <div className="lg:col-span-5 lg:pr-8">
-          <Eyebrow dark={false}>
-            OUR METHODOLOGY
-          </Eyebrow>
+        {/* LEFT COLUMN: HERO HEADLINE & PROGRESS TRACKER */}
+        <div className="flex flex-col justify-between lg:col-span-5 lg:pr-8">
+          <div>
+            <Eyebrow dark={false}>
+              OUR METHODOLOGY
+            </Eyebrow>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.9,
-              delay: 0.15,
-              ease,
-            }}
-            className="
-              mt-5
-              text-[1.9rem]
-              font-black
-              leading-[0.97]
-              tracking-[-0.04em]
-              sm:text-[2.6rem]
-              md:text-[3rem]
-            "
-            style={{
-              fontFamily: FONT_DISPLAY,
-            }}
-          >
-            Grounded in respect.
-            <br />
-            Driven by service.
-            <br />
-            <span className="text-[#8C8C87]">
-              Defined by courage.
-            </span>
-          </motion.h2>
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.9,
+                delay: 0.15,
+                ease,
+              }}
+              className="
+                mt-5
+                text-[1.9rem]
+                font-black
+                leading-[0.97]
+                tracking-[-0.04em]
+                sm:text-[2.6rem]
+                md:text-[3rem]
+              "
+              style={{
+                fontFamily: FONT_DISPLAY,
+              }}
+            >
+              Grounded in respect.
+              <br />
+              Driven by service.
+              <br />
+              <span className="text-white">
+                Defined by courage.
+              </span>
+            </motion.h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.35,
+                ease,
+              }}
+              className="
+                mt-6
+                max-w-md
+                text-[13.5px]
+                leading-6
+                text-white/60
+                sm:text-[14px]
+              "
+              style={{
+                fontFamily: FONT_BODY,
+              }}
+            >
+              We take a disciplined, research-driven approach
+              to every bespoke commission, ensuring that each
+              silhouette embodies the spirit of the event and
+              the weight of victory.
+            </motion.p>
+          </div>
+
+          {/* DYNAMIC METHODOLOGY PROGRESS BAR (MONOCHROME) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.35,
-              ease,
-            }}
-            className="
-              mt-6
-              max-w-md
-              text-[13.5px]
-              leading-6
-              text-white/70
-              sm:text-[14px]
-            "
-            style={{
-              fontFamily: FONT_BODY,
-            }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="mt-8 rounded-xl border border-white/20 bg-white/5 p-4 backdrop-blur-xl sm:mt-12"
           >
-            We take a disciplined, research-driven approach
-            to every bespoke commission, ensuring that each
-            silhouette embodies the spirit of the event and
-            the weight of victory.
-          </motion.p>
+            <div className="flex items-center justify-between font-mono text-[9px] tracking-[0.2em] text-white/80" style={{ fontFamily: FONT_MONO }}>
+              <span className="flex items-center gap-2">
+                <Sparkles size={12} className="animate-pulse text-white" />
+                PHASE METRICS
+              </span>
+              <span>0{activeStep + 1} / 0{PROCESS_STEPS.length}</span>
+            </div>
+
+            {/* PROGRESS BAR TRACK */}
+            <div className="relative mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+              <motion.div
+                className="h-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)]"
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 0.5, ease }}
+              />
+            </div>
+          </motion.div>
         </div>
 
+        {/* RIGHT COLUMN: ACCORDION LIST */}
         <div className="lg:col-span-7">
-          <div className="border-t border-white/20">
+          <div className="relative border-t border-white/20">
             {PROCESS_STEPS.map((step, i) => {
               const isActive = i === activeStep;
 
@@ -187,7 +220,7 @@ export function ProcessOverlay({
                     setActiveStep(i);
                   }}
                   whileHover={{
-                    x: 4,
+                    x: 6,
                   }}
                   whileTap={{
                     scale: 0.995,
@@ -196,28 +229,42 @@ export function ProcessOverlay({
                     duration: 0.3,
                     ease,
                   }}
-                  className="
+                  className={`
+                    relative
                     block
                     w-full
                     cursor-pointer
                     border-b
                     border-white/20
+                    px-5
                     py-5
                     text-left
-                    transition-colors
+                    transition-all
                     duration-500
-                    hover:bg-black/[0.025]
                     focus-premium
                     sm:py-6
-                  "
+                    ${
+                      isActive
+                        ? 'my-2 rounded-2xl border-white/40 bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+                        : 'hover:bg-white/[0.03]'
+                    }
+                  `}
                 >
+                  {/* ACTIVE SIDE GLOW BAR (WHITE) */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeProcessGlowBar"
+                      className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]"
+                      transition={{ duration: 0.35, ease }}
+                    />
+                  )}
+
                   <div className="flex items-start gap-4 sm:gap-6">
+                    {/* STEP NUMBER */}
                     <motion.span
                       animate={{
-                        scale: isActive ? 1.08 : 1,
-                        color: isActive
-                          ? C.white
-                          : '#8C8C87',
+                        scale: isActive ? 1.15 : 1,
+                        color: isActive ? '#FFFFFF' : '#8C8C87',
                       }}
                       transition={{
                         duration: 0.35,
@@ -226,7 +273,8 @@ export function ProcessOverlay({
                       className="
                         pt-1
                         font-mono
-                        text-[9px]
+                        text-[10px]
+                        font-bold
                         tracking-[0.18em]
                       "
                       style={{
@@ -243,13 +291,16 @@ export function ProcessOverlay({
                             color: isActive
                               ? C.white
                               : 'rgba(242, 241, 236, 0.5)',
-                            x: isActive ? 2 : 0,
+                            x: isActive ? 4 : 0,
                           }}
                           transition={{
                             duration: 0.35,
                             ease,
                           }}
                           className="
+                            flex
+                            items-center
+                            gap-3
                             text-[1.05rem]
                             font-extrabold
                             tracking-[-0.025em]
@@ -260,16 +311,27 @@ export function ProcessOverlay({
                           }}
                         >
                           {step.title}
+                          {isActive && (
+                            <motion.span 
+                              initial={{ opacity: 0, x: -6 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="text-white"
+                            >
+                              <ArrowRight size={16} />
+                            </motion.span>
+                          )}
                         </motion.h3>
 
+                        {/* BADGES */}
                         <motion.span
                           animate={{
                             borderColor: isActive
-                              ? 'rgba(242, 241, 236, 0.45)'
+                              ? 'rgba(255, 255, 255, 0.6)'
                               : 'rgba(255, 255, 255, 0.2)',
-                            color: isActive
-                              ? '#F2F1EC'
-                              : '#8C8C87',
+                            color: isActive ? '#FFFFFF' : '#8C8C87',
+                            backgroundColor: isActive
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent',
                           }}
                           transition={{
                             duration: 0.35,
@@ -278,13 +340,15 @@ export function ProcessOverlay({
                           className="
                             hidden
                             shrink-0
+                            rounded-md
                             border
-                            px-2
+                            px-3
                             py-1
                             font-mono
                             text-[7px]
                             uppercase
-                            tracking-[0.16em]
+                            tracking-[0.18em]
+                            backdrop-blur-md
                             sm:block
                           "
                           style={{
@@ -319,7 +383,7 @@ export function ProcessOverlay({
                             <motion.p
                               initial={{
                                 opacity: 0,
-                                y: 8,
+                                y: 10,
                               }}
                               animate={{
                                 opacity: 1,
@@ -333,9 +397,9 @@ export function ProcessOverlay({
                               className="
                                 mt-3
                                 text-[12px]
-                                font-medium
+                                font-semibold
                                 leading-5
-                                text-white/80
+                                text-white/90
                                 sm:text-[13px]
                               "
                               style={{
@@ -348,7 +412,7 @@ export function ProcessOverlay({
                             <motion.p
                               initial={{
                                 opacity: 0,
-                                y: 8,
+                                y: 10,
                               }}
                               animate={{
                                 opacity: 1,
