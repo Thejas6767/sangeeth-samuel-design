@@ -307,16 +307,18 @@ export function Navbar({
                 ease,
               }}
               className="
-                h-8
+                h-12
                 w-auto
-                max-w-[140px]
+                max-w-[210px]
                 object-contain
                 opacity-100
+                scale-150
+                origin-left
                 [--logo-filter:brightness(200%)_contrast(100%)]
-                sm:h-10
-                sm:max-w-[160px]
-                md:h-12
-                md:max-w-[200px]
+                sm:h-14
+                sm:max-w-[250px]
+                md:h-16
+                md:max-w-[300px]
                 md:[--logo-filter:brightness(0)]
               "
             />

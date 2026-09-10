@@ -51,9 +51,7 @@ export function Footer() {
           </nav>
 
           <div className="flex flex-col items-start gap-4 md:items-end">
-            <a href="https://www.instagram.com/the6t9th/" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center border border-[#232320] text-[#8C8C87] transition-colors hover:border-white hover:text-white focus-premium">
-              <span className="font-mono text-[9px] tracking-[0.08em]" style={{ fontFamily: FONT_MONO }}>IG</span>
-            </a>
+           
             <button type="button" onClick={() => { playSound('click'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="group flex items-center gap-3 border border-[#232320] px-4 py-3 font-mono text-[8px] tracking-[0.18em] text-[#8C8C87] transition-colors hover:border-white hover:text-white focus-premium" style={{ fontFamily: FONT_MONO }}>
               BACK TO TOP
               <ArrowUp size={12} strokeWidth={1.2} className="transition-transform duration-500 group-hover:-translate-y-0.5" />
